@@ -142,6 +142,7 @@ paths:
                   interest:
                     type: string
                     example: "Please select your interest"
+
   /profile/{firstname}:
     get:
       tags:
@@ -191,10 +192,7 @@ paths:
                 experience:
                   type: string
                   example: none
-                
-        
-      
-          
+
   /category:
     post:
       tags: 
@@ -216,7 +214,7 @@ paths:
             $ref: '#/definitions/category'
   
   /category/edit:
-    post:
+    put:
       tags: 
       - Employer
       summary: Employer can edit infomation in this path
@@ -254,7 +252,45 @@ paths:
           description: "Role Selected"
           schema:
             $ref: "#/definitions/role"
-    
+  
+  /location/employer:
+    get:
+      tags: 
+      - Employer
+      summary: ""
+      description: this is a page to show employee
+      parameters: 
+      - in: "body"
+        name: "employee_list"
+        description: employee list
+        required: true
+        schema:
+          $ref: '#/definitions/employee_list'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/employee_list'
+            
+  /location/post:
+    get:
+      tags: 
+      - Employer
+      summary: ""
+      description: ""
+      parameters: 
+      - in: "body"
+        name: "Post_list"
+        description: Post list
+        required: true
+        schema:
+          $ref: '#/definitions/post_list'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/post_list'
+
 
 definitions:
   user: 
@@ -348,6 +384,40 @@ definitions:
       interest:
         type: string
         example: Coffee shop
+
+  employee_list:
+    type: object
+    required: 
+    - name
+    - occupation
+    - age
+    properties:
+      name:
+        type: string
+        example: tae
+      occupation:
+        type: string
+        example: Selesperson
+      age:
+        type: integer
+        example: 24
+        
+  post_list:
+    type: object
+    required: 
+    - shopname
+    - category
+    - province
+    properties:
+      shopname:
+        type: string
+        example: U-Coffee
+      category:
+        type: string
+        example: Coffee Shop
+      province:
+        type: string
+        example: Bangkok
   
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
