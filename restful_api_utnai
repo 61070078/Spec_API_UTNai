@@ -193,7 +193,36 @@ paths:
                 experience:
                   type: string
                   example: none
-
+          400:
+            description: This id does not exist
+  
+  /profile/{id}/edit:
+    put:
+      tags:
+      - Employee
+      summary: "For employee to edit their profile"
+      description: ""
+      operationId: editProfile
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "To identify which id to edit"
+          required: true
+          type: integer
+          format: int32
+        - in: "body"
+          name: "body"
+          description: "Updated user object"
+          required: true
+          schema:
+            $ref: "#/definitions/profile"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/profile' 
+      
+      
   /category:
     post:
       tags: 
@@ -291,9 +320,80 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/post_list'
+  
+  /forgot:
+    post:
+      tags:
+      - user
+      summary: "Reset Password"
+      description: ""
+      parameters:
+      - in: "body"
+        name: "reset"
+        description: ""
+        required: true
+        schema:
+          $ref: '#/definitions/reset'
+      responses:
+        200:
+          description: Reseting E-mail sent
+  
+  /change/{id}:
+    put:
+      tags:
+      - Employee
+      - Employer
+      summary: Change Password
+      description: ""
+      operationId: changePass
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          type: integer
+          format: int32
+        - in: "body"
+          name: "body"
+          description: "Updated user object"
+          required: true
+          schema:
+            $ref: "#/definitions/change"
+      responses:
+        200:
+          description: Changed
+          
+      
+        
+  
+    
 
 
 definitions:
+  change:
+    type: object
+    required:
+    - oldpass
+    - newpass
+    - confirm
+    properties:
+      oldpass:
+        type: string
+        example: swaggerisveryeasy
+      newpass:
+        type: string
+        example: ricksanchez12345
+      confirm:
+        type: string
+        example: ricksanchez12345
+        
+  reset:
+    type: object
+    required:
+    - email
+    properties:
+      email:
+        type: string
+        example: rick@gmail.com
   user: 
     type: object
     required:
@@ -324,9 +424,8 @@ definitions:
         type: string
         example: Smith
       id:
-        type: integer
-        example: 512
-        
+        type: string
+        example: 152
   login:
     type: object
     required: 
@@ -423,6 +522,50 @@ definitions:
       province:
         type: string
         example: Bangkok
+    
+  profile:
+    type: object
+    required:
+    - firstname
+    - lastname
+    - birthday
+    - age
+    - email
+    - number
+    - interest
+    - language
+    - experience
+    - id
+    properties:
+      firstname:
+        type: string
+        example: Rick
+      lastname:
+        type: string
+        example: Sanchez
+      birthday:
+        type: string
+        example: 29/2/1999
+      age:
+        type: integer
+        example: 19
+      email:
+        type: string
+        example: rick@gmail.com
+      number:
+        type: string
+        example: 089-999
+      interest:
+        type: string
+        example: spaceship crew
+      language:
+        type: string
+        example: English
+      experience:
+        type: string
+        example: none
+      id:
+        type: integer
   
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
