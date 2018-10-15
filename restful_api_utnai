@@ -361,14 +361,86 @@ paths:
       responses:
         200:
           description: Changed
-          
+  /delete/{id}:
+    delete:
+      tags:
+      - Employee
+      - Employer
+      summary: Delete Accout
+      description: ""
+      operationId: Delete
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Deleted
       
-        
+  /filter:
+    get:
+      tags:
+      - Employee
+      summary: Shop filter
+      description: ""
+      operationId: ""
+      parameters:
+        - in: "body"
+          name: "filter"
+          required: true
+          schema:
+            $ref: '#/definitions/filter'
+      responses:
+        200:
+          description: OK
+          schema:
+            properties:
+              shop1:
+                type: string
+                example: starbuck
+              shop2:
+                type: string
+                example: amazon
   
-    
-
+  /shop/{id}:
+    get:
+      tags:
+      - Employee
+      summary: show shop information
+      description: ""
+      operationId: getInformation
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/category'
+            
 
 definitions:
+  filter:
+    type: object
+    required:
+    - dist
+    - province
+    - category
+    properties:
+      dist:
+        type: integer
+        example: 50
+      province:
+        type: string
+        example: bangkok
+      category:
+        type: string
+        example: Bar 
   change:
     type: object
     required:
