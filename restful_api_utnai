@@ -102,13 +102,14 @@ paths:
                 properties:
                   statuscode:
                     type: string
-                    example: "4060002"
+                    example: "4060001"
                   statustext:
                     type: string
                     example: "Login is unsuccessful"
                   passworld:
                     type: string
                     example: "Passworld is incorrect"
+
   /interest:
     post:
       tags:
@@ -143,7 +144,7 @@ paths:
                     type: string
                     example: "Please select your interest"
 
-  /profile/{id}:
+  /employee/profile/{id}:
     get:
       tags:
       - Employee
@@ -156,7 +157,6 @@ paths:
           required: true
           type: integer
           format: int32
-          
       responses:
           200:
             description: OK
@@ -196,7 +196,7 @@ paths:
           400:
             description: This id does not exist
   
-  /profile/{id}/edit:
+  /employee/profile/{id}/edit:
     put:
       tags:
       - Employee
@@ -215,54 +215,100 @@ paths:
           description: "Updated user object"
           required: true
           schema:
-            $ref: "#/definitions/profile"
+            $ref: "#/definitions/profile_employee"
       responses:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/profile' 
-      
-      
-  /category:
+            $ref: '#/definitions/profile_employee' 
+
+  /category/{id}:
     post:
       tags: 
       - Employer
       summary: shop infomation
-      description: This function for infomation
-      operationId: category infomation
-      parameters: 
-      - in: "body"
-        name: "category data"
-        description: This function for login
+      description: ""
+      operationId: ""
+      parameters:
+      - in: "path"
+        name: "id"
         required: true
-        schema:
-          $ref: '#/definitions/category'
+        type: integer
+        format: int32
       responses:
-        200:
-          description: OK
+        201:
+          description: Created!
           schema:
             $ref: '#/definitions/category'
   
-  /category/edit:
+  /category/{id}/edit:
     put:
       tags: 
       - Employer
-      summary: Employer can edit infomation in this path
-      description: This function for infomation
-      operationId: category edit
+      summary: Employer can edit infomation in this path.
+      description: ""
+      operationId: ""
       parameters: 
+      - in: "path"
+        name: "id"
+        required: true
+        type: integer
+        format: int32
       - in: "body"
         name: "category edit"
-        description: this function can edit post
+        description: ""
         required: true
         schema:
           $ref: '#/definitions/category'
       responses:
-        200:
-          description: OK
+        202:
+          description: Accepted!
           schema:
             $ref: '#/definitions/category'
-            
+        400:
+          description: Create is unsuccessful
+          schema:
+                type: object
+                properties:
+                  statuscode:
+                    type: string
+                    example: "4000003"
+                  statustext:
+                    type: string
+                    example: "Create is unsuccessful"
+                  shopname:
+                    type: string
+                    example: "Plase Enter Shop Name"
+                  description:
+                    type: string
+                    example: "Plase Enter Information"
+                  wage:
+                    type: string
+                    example: "Plase Enter Information"
+                  min:
+                    type: string
+                    example: "Plase Enter Value"
+                  max:
+                    type: string
+                    example: "Plase Enter Value"
+                  location:
+                    type: string
+                    example: "Plase Enter Location"
+                  province:
+                    type: string
+                    example: "Plase Enter Province"
+        408:
+          description: Request Timeout
+          schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: "40800001"
+                  statusText:
+                    type: string
+                    example: Request Timeout
+
   /role:
     post:
       tags:
@@ -287,39 +333,76 @@ paths:
     get:
       tags: 
       - Employer
-      summary: ""
-      description: this is a page to show employee
-      parameters: 
-      - in: "body"
-        name: "employee_list"
-        description: employee list
-        required: true
-        schema:
-          $ref: '#/definitions/employee_list'
+      summary: "this is a page to show employee list"
+      description: ""
       responses:
         200:
           description: OK
           schema:
             $ref: '#/definitions/employee_list'
-            
+        408:
+          description: Request Timeout
+          schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: "40800002"
+                  statusText:
+                    type: string
+                    example: Request Timeout
+
+  /location/employer/{id}:
+    get:
+      tags:
+      - Employer
+      summary: "this page show profile's employee"
+      description: ""
+      parameters:
+      - in: "path"
+        name: "id"
+        required: true
+        type: integer
+        format: int32
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/profile_employee'
+        408:
+          description: Request Timeout
+          schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: "40800003"
+                  statusText:
+                    type: string
+                    example: Request Timeout
+
   /location/post:
     get:
       tags: 
       - Employer
-      summary: ""
+      summary: "This page show post list"
       description: ""
-      parameters: 
-      - in: "body"
-        name: "Post_list"
-        description: Post list
-        required: true
-        schema:
-          $ref: '#/definitions/post_list'
       responses:
         200:
           description: OK
           schema:
             $ref: '#/definitions/post_list'
+        408:
+          description: Request Timeout
+          schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: "40800004"
+                  statusText:
+                    type: string
+                    example: Request Timeout
   
   /forgot:
     post:
@@ -361,6 +444,7 @@ paths:
       responses:
         200:
           description: Changed
+
   /delete/{id}:
     delete:
       tags:
@@ -378,8 +462,8 @@ paths:
       responses:
         200:
           description: Deleted
-      
-  /filter:
+
+  /filter/employee:
     get:
       tags:
       - Employee
@@ -391,7 +475,7 @@ paths:
           name: "filter"
           required: true
           schema:
-            $ref: '#/definitions/filter'
+            $ref: '#/definitions/filter_employee'
       responses:
         200:
           description: OK
@@ -422,10 +506,222 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/category'
-            
+
+  /filter/employer:
+    get:
+      tags:
+      - Employer
+      summary: Employer Filter
+      description: ""
+      operationId: ""
+      parameters:
+        - in: "body"
+          name: "filter"
+          required: true
+          schema:
+            $ref: '#/definitions/filter_employer'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/filter_employer'
+
+  /chat/{id}:
+    get:
+      tags: 
+      - Employer
+      summary: "This page show chat list"
+      description: ""
+      parameters: 
+      - in: "path"
+        name: "id"
+        required: true
+        type: integer
+        format: int32
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/profile_employee'
+        408:
+          description: Request Timeout
+          schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: "40800006"
+                  statusText:
+                    type: string
+                    example: Request Timeout
+
+  /interest/{id}:
+    get:
+      tags: 
+      - Employer
+      summary: "This page show employee list"
+      description: ""
+      parameters: 
+      - in: "path"
+        name: "id"
+        required: true
+        type: integer
+        format: int32
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/profile_employee'
+        408:
+          description: Request Timeout
+          schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: "40800007"
+                  statusText:
+                    type: string
+                    example: Request Timeout
+
+  /interest/employee/{id}:
+    get:
+      tags:
+      - Employer
+      summary: "Employee Information"
+      description: ""
+      parameters:
+      - in: "path"
+        name: "id"
+        required: true
+        type: integer
+        format: int32
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/profile_employee'
+        408:
+            description: Request Timeout 
+            schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: "40800008"
+                  statusText:
+                    type: string
+                    example: Request Timeout
+
+  /employer/profile/{id}:
+    get:
+      tags:
+      - Employer
+      summary: "Employer Information"
+      description: ""
+      parameters:
+      - in: "path"
+        name: "id"
+        required: true
+        type: integer
+        format: int32
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/profile_employer'
+        408:
+            description: Request Timeout 
+            schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: "40800009"
+                  statusText:
+                    type: string
+                    example: Request Timeout
+  
+  /employer/profile/{id}/edit:
+    put:
+      tags:
+      - Employer
+      summary: "For employer to edit their profile"
+      description: ""
+      parameters:
+      - in: "path"
+        name: "id"
+        required: true
+        type: integer
+        format: int32
+      - in: "body"
+        name: "employer profile edit"
+        required: true
+        schema:
+          $ref: '#/definitions/profile_employer'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/profile_employer'
+        400:
+          description: Login is unsuccessful
+          schema:
+                type: object
+                properties:
+                  statuscode:
+                    type: string
+                    example: "4000003"
+                  statustext:
+                    type: string
+                    example: "Create is unsuccessful"
+                  companyname:
+                    type: string
+                    example: "Plase Enter Company Name"
+                  phonenumber:
+                    type: string
+                    example: "Plase Enter Phone Number"
+                  email:
+                    type: string
+                    example: "Plase Enter Email"
+                  website:
+                    type: string
+                    example: "Plase Enter Website"
+                  address:
+                    type: string
+                    example: "Plase Enter Address"
+        408:
+            description: Request Timeout 
+            schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: "408000010"
+                  statusText:
+                    type: string
+                    example: Request Timeout
+
+  /package/{level}:
+    get:
+      tags: 
+      - Employer
+      summary: "Show package list"
+      description: ""
+      parameters: 
+      - in: "path"
+        name: "level"
+        required: true
+        type: integer
+        format: int32
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/package'
 
 definitions:
-  filter:
+  filter_employee:
     type: object
     required:
     - dist
@@ -441,6 +737,20 @@ definitions:
       category:
         type: string
         example: Bar 
+  
+  filter_employer:
+    type: object
+    required:
+    - category
+    - province
+    properties:
+      category:
+        type: string
+        example: CEO
+      province:
+        type: string
+        example: bangkok
+  
   change:
     type: object
     required:
@@ -595,7 +905,7 @@ definitions:
         type: string
         example: Bangkok
     
-  profile:
+  profile_employee:
     type: object
     required:
     - firstname
@@ -638,6 +948,67 @@ definitions:
         example: none
       id:
         type: integer
+        
+  profile_employer:
+    type: object
+    required:
+    - companyname
+    - phonenumber
+    - email
+    - website
+    - address
+    - id
+    properties:
+      companyname:
+        type: string
+        example: UTNai Company
+      phonenumber:
+        type: string
+        example: 032-051-4216
+      email:
+        type: string
+        example: UTNai@gmail.com
+      website:
+        type: integer
+        example: UTNai.com
+      address:
+        type: string
+        example: 11600  New Petchaburi Rd.
+                Makkasan Sub-area   Ratchathewi Area
+                Krung Thep Maha Nakhon   10400
+                Thailand.
+      id:
+        type: integer
+        
+  package:
+    type: object
+    required:
+    - level
+    - price
+    - timerange
+    - postrange
+    - positions
+    - id
+    properties:
+      level:
+        type: integer
+        example: 1
+      price:
+        type: integer
+        example: 500
+      timerange:
+        type: integer
+        example: 1ls
+        
+      postrange:
+        type: string
+        example: unlimited
+      positions:
+        type: integer
+        example: 1
+      id:
+        type: integer
+
   
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
@@ -649,4 +1020,6 @@ schemes:
 # Added by API Auto Mocking Plugin
 # basePath: /61070078/UTNai_V01_API/1.0.0
 # Added by API Auto Mocking Plugin
-basePath: /61070089/UTNai_API/1.0.0
+# basePath: /61070089/UTNai_API/1.0.0
+# Added by API Auto Mocking Plugin
+basePath: /61070078/UTNai_V01_API/1.0.0
