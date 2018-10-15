@@ -143,7 +143,7 @@ paths:
                     type: string
                     example: "Please select your interest"
 
-  /profile/{firstname}:
+  /profile/{id}:
     get:
       tags:
       - Employee
@@ -151,11 +151,12 @@ paths:
       description: ""
       operationId: showProfile
       parameters:
-        - in: "body"
-          name: ""
+        - in: "path"
+          name: "id"
           required: true
-          schema:
-            $ref: '#/definitions/user'
+          type: integer
+          format: int32
+          
       responses:
           200:
             description: OK
@@ -302,6 +303,7 @@ definitions:
     - birthday
     - firstname
     - lastname
+    - id
     properties:
       email:
         type: string
@@ -321,6 +323,9 @@ definitions:
       lastname:
         type: string
         example: Smith
+      id:
+        type: integer
+        example: 512
         
   login:
     type: object
