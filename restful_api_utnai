@@ -2,18 +2,18 @@ swagger: '2.0'
 info:
   description: This is a simple API
   version: 1.0.0
-  title: Simple Inventory API
+  title: UTNai API
 tags:
 - name: Employer
 - name: Employee
-- name: user
+- name: User
   description: Unregistered user
 
 paths:
   /register:
     post:
       tags:
-      - user
+      - User
       summary: create user
       description: This function for create user
       operationId: createUser
@@ -40,29 +40,11 @@ paths:
                   statustext:
                     type: string
                     example: "Field not complete"
-                  email:
-                    type: string
-                    example: "Plase Enter Email"
-                  passworld:
-                    type: string
-                    example: "Plase Enter Passworld"
-                  firstname:
-                    type: string
-                    example: "Plase Enter Firstname"
-                  lastname:
-                    type: string
-                    example: "Plase Enter Lastname"
-                  gender:
-                    type: string
-                    example: "Plase Enter Gender"
-                  birthday:
-                    type: string
-                    example: "Plase Enter Birthday"
 
   /login:
     post:
       tags: 
-      - user
+      - User
       summary: login user 
       description: This function for login
       operationId: login user
@@ -95,6 +77,7 @@ paths:
                   passworld:
                     type: string
                     example: "Plase Enter Passworld"
+                  
         406:
           description: Login is unsuccessful
           schema:
@@ -222,38 +205,61 @@ paths:
           schema:
             $ref: '#/definitions/profile_employee' 
 
-  /category/{id}:
+  /post:
+    get:
+      tags: 
+      - Employer
+      summary: Show infomation's employer
+      description: ""
+      responses:
+        200:
+          description: Successful
+          schema:
+                type: object
+                properties:
+                  statuscode:
+                    type: string
+                    example: "2000002"
+                  statustext:
+                    type: string
+                    example: "Successful"
+                  get:
+                    $ref: '#/definitions/category'
+
     post:
       tags: 
       - Employer
-      summary: shop infomation
+      summary: Employer can create  new post in this path.
       description: ""
-      operationId: ""
-      parameters:
-      - in: "path"
-        name: "id"
+      parameters: 
+      - in: "body"
+        name: "category edit"
+        description: ""
         required: true
-        type: integer
-        format: int32
+        schema:
+          $ref: '#/definitions/category'
       responses:
         201:
           description: Created!
           schema:
-            $ref: '#/definitions/category'
-  
-  /category/{id}/edit:
+                type: object
+                properties:
+                  statuscode:
+                    type: string
+                    example: "2010002"
+                  statustext:
+                    type: string
+                    example: "Create is successful"
+                  post:
+                    $ref: '#/definitions/category'
+
     put:
       tags: 
       - Employer
-      summary: Employer can edit infomation in this path.
+      summary: Employer can edit or update infomation in this path.
       description: ""
       operationId: ""
       parameters: 
-      - in: "path"
-        name: "id"
-        required: true
-        type: integer
-        format: int32
       - in: "body"
         name: "category edit"
         description: ""
@@ -264,7 +270,15 @@ paths:
         202:
           description: Accepted!
           schema:
-            $ref: '#/definitions/category'
+            properties:
+              statuscode:
+                type: string
+                example: "2020001"
+              statustext:
+                type: string
+                example: "Update is successful"
+              put:
+                $ref: '#/definitions/category'
         400:
           description: Create is unsuccessful
           schema:
@@ -276,43 +290,11 @@ paths:
                   statustext:
                     type: string
                     example: "Create is unsuccessful"
-                  shopname:
-                    type: string
-                    example: "Plase Enter Shop Name"
-                  description:
-                    type: string
-                    example: "Plase Enter Information"
-                  wage:
-                    type: string
-                    example: "Plase Enter Information"
-                  min:
-                    type: string
-                    example: "Plase Enter Value"
-                  max:
-                    type: string
-                    example: "Plase Enter Value"
-                  location:
-                    type: string
-                    example: "Plase Enter Location"
-                  province:
-                    type: string
-                    example: "Plase Enter Province"
-        408:
-          description: Request Timeout
-          schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: string
-                    example: "40800001"
-                  statusText:
-                    type: string
-                    example: Request Timeout
 
   /role:
     post:
       tags:
-      - user
+      - User
       summary: User can select their role in this page
       description: " "
       operationId: roleSelection
@@ -339,20 +321,19 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/employee_list'
-        408:
-          description: Request Timeout
-          schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: string
-                    example: "40800002"
-                  statusText:
-                    type: string
-                    example: Request Timeout
+            properties:
+              statuscode:
+                type: string
+                example: "2000001"
+              statustext:
+                type: string
+                example: "Successful"
+              users:
+                type: array
+                items:
+                  $ref: '#/definitions/employee_list'
 
-  /location/employer/{id}:
+  /location/employer/{userID}:
     get:
       tags:
       - Employer
@@ -360,26 +341,23 @@ paths:
       description: ""
       parameters:
       - in: "path"
-        name: "id"
+        name: "userID"
         required: true
         type: integer
         format: int32
       responses:
         200:
-          description: OK
+          description: Successful
           schema:
-            $ref: '#/definitions/profile_employee'
-        408:
-          description: Request Timeout
-          schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: string
-                    example: "40800003"
-                  statusText:
-                    type: string
-                    example: Request Timeout
+            properties:
+                statuscode:
+                  type: string
+                  example: "2000001"
+                statustext:
+                  type: string
+                  example: "Successful"
+                get:
+                  $ref: '#/definitions/profile_employee'
 
   /location/post:
     get:
@@ -387,27 +365,41 @@ paths:
       - Employer
       summary: "This page show post list"
       description: ""
+      parameters:
+        - in: path
+          name: query
+          type: string
+          required: true
+          description: Search data.
       responses:
         200:
-          description: OK
+          description: Successful
           schema:
-            $ref: '#/definitions/post_list'
-        408:
-          description: Request Timeout
-          schema:
+            properties:
+              statusCode:
+                type: string
+                example: "40800003"
+              statusText:
+                type: string
+                example: Request Timeout
+              posts:
+                type: array
+                items:
+                  $ref: '#/definitions/post_list'
+              search:
                 type: object
                 properties:
-                  statusCode:
+                  key:
                     type: string
-                    example: "40800004"
-                  statusText:
+                    example: name
+                  query:
                     type: string
-                    example: Request Timeout
+                    example: U-coffee
   
   /forgot:
     post:
       tags:
-      - user
+      - User
       summary: "Reset Password"
       description: ""
       parameters:
@@ -522,69 +514,63 @@ paths:
             $ref: '#/definitions/filter_employer'
       responses:
         200:
-          description: OK
+          description: Successful
           schema:
-            $ref: '#/definitions/filter_employer'
+            properties:
+                statuscode:
+                  type: string
+                  example: "2000001"
+                statustext:
+                  type: string
+                  example: "Successful"
+                get:
+                  $ref: '#/definitions/filter_employer'
 
-  /chat/{id}:
+  /chat:
     get:
       tags: 
       - Employer
       summary: "This page show chat list"
       description: ""
-      parameters: 
-      - in: "path"
-        name: "id"
-        required: true
-        type: integer
-        format: int32
       responses:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/profile_employee'
-        408:
-          description: Request Timeout
-          schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: string
-                    example: "40800006"
-                  statusText:
-                    type: string
-                    example: Request Timeout
+            properties:
+                statuscode:
+                  type: string
+                  example: "2000001"
+                statustext:
+                  type: string
+                  example: "Successful"
+                chats:
+                  type: array
+                  items:
+                    $ref: '#/definitions/profile_employee'
 
-  /interest/{id}:
+  /employer/interest:
     get:
       tags: 
       - Employer
       summary: "This page show employee list"
       description: ""
-      parameters: 
-      - in: "path"
-        name: "id"
-        required: true
-        type: integer
-        format: int32
       responses:
         200:
-          description: OK
+          description: Successful
           schema:
-            $ref: '#/definitions/profile_employee'
-        408:
-          description: Request Timeout
-          schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: string
-                    example: "40800007"
-                  statusText:
-                    type: string
-                    example: Request Timeout
+            properties:
+                statuscode:
+                  type: string
+                  example: "2000001"
+                statustext:
+                  type: string
+                  example: "Successful"
+                interests:
+                  type: array
+                  items:
+                    $ref: '#/definitions/profile_employee'
 
-  /interest/employee/{id}:
+  /interest/employee/{userID}:
     get:
       tags:
       - Employer
@@ -592,7 +578,7 @@ paths:
       description: ""
       parameters:
       - in: "path"
-        name: "id"
+        name: "userID"
         required: true
         type: integer
         format: int32
@@ -600,60 +586,44 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/profile_employee'
-        408:
-            description: Request Timeout 
-            schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: string
-                    example: "40800008"
-                  statusText:
-                    type: string
-                    example: Request Timeout
+            properties:
+                statuscode:
+                  type: string
+                  example: "2000001"
+                statustext:
+                  type: string
+                  example: "Successful"
+                get:
+                  $ref: '#/definitions/profile_employee'
 
-  /employer/profile/{id}:
+  /employer/profile:
     get:
       tags:
       - Employer
       summary: "Employer Information"
       description: ""
-      parameters:
-      - in: "path"
-        name: "id"
-        required: true
-        type: integer
-        format: int32
       responses:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/profile_employer'
-        408:
-            description: Request Timeout 
-            schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: string
-                    example: "40800009"
-                  statusText:
-                    type: string
-                    example: Request Timeout
+            properties:
+              statuscode:
+                  type: string
+                  example: "2000001"
+              statustext:
+                type: string
+                example: "Successful"
+              get:
+                $ref: '#/definitions/profile_employer'
+
   
-  /employer/profile/{id}/edit:
+  /employer/profile/edit:
     put:
       tags:
       - Employer
       summary: "For employer to edit their profile"
       description: ""
       parameters:
-      - in: "path"
-        name: "id"
-        required: true
-        type: integer
-        format: int32
       - in: "body"
         name: "employer profile edit"
         required: true
@@ -663,7 +633,15 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/profile_employer'
+            properties:
+              statuscode:
+                type: string
+                example: "2000001"
+              statustext:
+                type: string
+                example: "Successful"
+              put:
+                $ref: '#/definitions/profile_employer'
         400:
           description: Login is unsuccessful
           schema:
@@ -690,19 +668,8 @@ paths:
                   address:
                     type: string
                     example: "Plase Enter Address"
-        408:
-            description: Request Timeout 
-            schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: string
-                    example: "408000010"
-                  statusText:
-                    type: string
-                    example: Request Timeout
 
-  /package/{level}:
+  /package/{levelID}:
     get:
       tags: 
       - Employer
@@ -710,7 +677,7 @@ paths:
       description: ""
       parameters: 
       - in: "path"
-        name: "level"
+        name: "levelID"
         required: true
         type: integer
         format: int32
@@ -718,7 +685,15 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/package'
+            properties:
+              statuscode:
+                type: string
+                example: "2000001"
+              statustext:
+                type: string
+                example: "Successful"
+              get:
+                $ref: '#/definitions/package'
 
 definitions:
   filter_employee:
@@ -824,6 +799,7 @@ definitions:
   category:
     type: object
     required: 
+    - category
     - shopname
     - description
     - wage
@@ -832,9 +808,12 @@ definitions:
     - location
     - province
     properties:
+      category:
+        type: string
+        example: Coffee shop
       shopname:
         type: string
-        example: coffee shop
+        example: U-coffee
       description:
         type: string
         example: information about you shop
@@ -874,10 +853,14 @@ definitions:
   employee_list:
     type: object
     required: 
+    - id
     - name
     - occupation
     - age
     properties:
+      id:
+        type: integer
+        example: 1
       name:
         type: string
         example: tae
@@ -891,10 +874,14 @@ definitions:
   post_list:
     type: object
     required: 
+    - postID
     - shopname
     - category
     - province
     properties:
+      postID:
+        type: integer
+        example: 1
       shopname:
         type: string
         example: U-Coffee
@@ -983,13 +970,17 @@ definitions:
   package:
     type: object
     required:
+    - levelID
     - level
     - price
     - timerange
     - postrange
     - positions
-    - id
     properties:
+      levelID:
+        type: integer
+        format: int64
+        example: 1
       level:
         type: integer
         example: 1
@@ -998,17 +989,13 @@ definitions:
         example: 500
       timerange:
         type: integer
-        example: 1ls
-        
+        example: 1
       postrange:
         type: string
         example: unlimited
       positions:
         type: integer
         example: 1
-      id:
-        type: integer
-
   
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
