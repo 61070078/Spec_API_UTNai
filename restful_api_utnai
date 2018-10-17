@@ -54,44 +54,37 @@ paths:
         description: "load data from server"
         required: true
         schema:
-          $ref: "#/definitions/login"
+          properties:
+            email:
+              type: string
+              example: sanchez@mail.com
+            password:
+              type: string
+              example: rickiest_rick
       responses: 
         200:
           description: Login is successful
           schema:
-            $ref: "#/definitions/login"
+            properties:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
+                type: string
+                example: Login successful
+              token:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
         400:
           description: Login is unsuccessful
           schema:
-                type: object
-                properties:
-                  statuscode:
-                    type: string
-                    example: "4000002"
-                  statustext:
-                    type: string
-                    example: "Login is unsuccessful"
-                  email:
-                    type: string
-                    example: "Plase Enter Email"
-                  passworld:
-                    type: string
-                    example: "Plase Enter Passworld"
-                  
-        406:
-          description: Login is unsuccessful
-          schema:
-                type: object
-                properties:
-                  statuscode:
-                    type: string
-                    example: "4060001"
-                  statustext:
-                    type: string
-                    example: "Login is unsuccessful"
-                  passworld:
-                    type: string
-                    example: "Passworld is incorrect"
+            properties:
+              statuscode:
+                type: string
+                example: "4000002"
+              statustext:
+                type: string
+                example: "Login is unsuccessful"
 
   /interest:
     post:
@@ -111,7 +104,15 @@ paths:
         200:
           description: Interest selected
           schema:
-            $ref: '#/definitions/interest'
+            properties:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
+                type: string
+                example: OK
+              payload:
+                $ref: '#/definitions/interest'
         400:
           description: Field not complete
           schema:
@@ -123,11 +124,8 @@ paths:
                   statusText:
                     type: string
                     example: Field not complete
-                  interest:
-                    type: string
-                    example: "Please select your interest"
 
-  /employee/profile/{id}:
+  /employee/profile:
     get:
       tags:
       - Employee
@@ -135,51 +133,70 @@ paths:
       description: ""
       operationId: showProfile
       parameters:
-        - in: "path"
-          name: "id"
+        - in: "body"
+          name: "token"
           required: true
-          type: integer
-          format: int32
+          schema:
+            properties:
+              token:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
       responses:
           200:
             description: OK
             schema:
               type: object
               properties:
-                email:
-                  type: string
-                  example: tae_chanhom@hotmail.com
-                passworld:
-                  type: string
-                  example: 029959866Tae
-                gender:
-                  type: string
-                  example: male
-                brithday:
-                  type: string
-                  example: 14/12/42
-                firstname:
-                  type: string
-                  example: John
-                lastname:
-                  type: string
-                  example: Smith
-                interest:
-                  type: string
-                  example: Coffee Shop
-                age:
+                statusCode:
                   type: integer
-                  example: 20
-                language:
+                  example: 2000001
+                statusText:
                   type: string
-                  example: Thai
-                experience:
-                  type: string
-                  example: none
+                  example: OK
+                profile:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: tae_chanhom@hotmail.com
+                    passworld:
+                      type: string
+                      example: 029959866Tae
+                    gender:
+                      type: string
+                      example: male
+                    brithday:
+                      type: string
+                      example: 14/12/42
+                    firstname:
+                      type: string
+                      example: John
+                    lastname:
+                      type: string
+                      example: Smith
+                    interest:
+                      type: string
+                      example: Coffee Shop
+                    age:
+                      type: integer
+                      example: 20
+                    language:
+                      type: string
+                      example: Thai
+                    experience:
+                      type: string
+                      example: none
           400:
             description: This id does not exist
+            schema:
+              properties:
+                statusCode:
+                  type: integer
+                  example: 4000001
+                statusText:
+                  type: string
+                  example: Bad request
   
-  /employee/profile/{id}/edit:
     put:
       tags:
       - Employee
@@ -187,12 +204,6 @@ paths:
       description: ""
       operationId: editProfile
       parameters:
-        - in: "path"
-          name: "id"
-          description: "To identify which id to edit"
-          required: true
-          type: integer
-          format: int32
         - in: "body"
           name: "body"
           description: "Updated user object"
@@ -203,7 +214,16 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/profile_employee' 
+            properties:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
+                type: string
+                example: OK
+              editedProfile:
+                $ref: '#/definitions/profile_employee' 
+            
 
   /post:
     get:
@@ -309,7 +329,15 @@ paths:
         200:
           description: "Role Selected"
           schema:
-            $ref: "#/definitions/role"
+            properties:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
+                type: string
+                example: Role selected!
+              payload:
+                $ref: "#/definitions/role"
   
   /location/employer:
     get:
@@ -408,12 +436,24 @@ paths:
         description: ""
         required: true
         schema:
-          $ref: '#/definitions/reset'
+          properties:
+            email:
+              type: string
+              example: sanchez@mail.co
       responses:
         200:
           description: Reseting E-mail sent
+          schema:
+            properties:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
+                type: string
+                example: E-mail sent!
+
   
-  /change/{id}:
+  /change:
     put:
       tags:
       - Employee
@@ -422,11 +462,7 @@ paths:
       description: ""
       operationId: changePass
       parameters:
-        - in: "path"
-          name: "id"
-          required: true
-          type: integer
-          format: int32
+
         - in: "body"
           name: "body"
           description: "Updated user object"
@@ -436,8 +472,16 @@ paths:
       responses:
         200:
           description: Changed
+          schema:
+            properties:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
+                type: string
+                example: OK
 
-  /delete/{id}:
+  /delete:
     delete:
       tags:
       - Employee
@@ -446,14 +490,38 @@ paths:
       description: ""
       operationId: Delete
       parameters:
-        - in: "path"
-          name: "id"
+        - in: "body"
+          name: "Delete"
           required: true
-          type: integer
-          format: int32
+          schema:
+            properties:
+              userId:
+                type: integer
+                example: 512
+              token:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
       responses:
         200:
           description: Deleted
+          schema:
+            properties:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
+                type: string
+                example: Deleted
+        400:
+          description: User not found
+          schema:
+            properties:
+              statusCode:
+                type: integer
+                example: 4000001
+              statusText:
+                type: string
+                example: Bad request
 
   /filter/employee:
     get:
@@ -473,14 +541,25 @@ paths:
           description: OK
           schema:
             properties:
-              shop1:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
                 type: string
-                example: starbuck
-              shop2:
-                type: string
-                example: amazon
-  
-  /shop/{id}:
+                example: Shop found!
+              shop:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    shopId_1:
+                      type: integer
+                      example: 256
+                    shopId_2:
+                      type: integer
+                      example: 128
+      
+  /shop/{shopId}:
     get:
       tags:
       - Employee
@@ -489,7 +568,7 @@ paths:
       operationId: getInformation
       parameters:
         - in: "path"
-          name: "id"
+          name: "shopId"
           required: true
           type: integer
           format: int32
@@ -497,7 +576,15 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/category'
+            properties:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
+                type: string
+                example: OK
+              shopInformation:
+                $ref: '#/definitions/category'
 
   /filter/employer:
     get:
@@ -732,6 +819,7 @@ definitions:
     - oldpass
     - newpass
     - confirm
+    - token
     properties:
       oldpass:
         type: string
@@ -742,15 +830,10 @@ definitions:
       confirm:
         type: string
         example: ricksanchez12345
-        
-  reset:
-    type: object
-    required:
-    - email
-    properties:
-      email:
+      token:
         type: string
-        example: rick@gmail.com
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+
   user: 
     type: object
     required:
@@ -783,18 +866,6 @@ definitions:
       id:
         type: string
         example: 152
-  login:
-    type: object
-    required: 
-    - email
-    - password
-    properties:
-      email:
-        type: string
-        example: john777@gmail.com
-      password:
-        type: string
-        example: supersecret777
 
   category:
     type: object
@@ -904,7 +975,7 @@ definitions:
     - interest
     - language
     - experience
-    - id
+    - token
     properties:
       firstname:
         type: string
@@ -933,8 +1004,9 @@ definitions:
       experience:
         type: string
         example: none
-      id:
-        type: integer
+      token:
+        type: string
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
         
   profile_employer:
     type: object
@@ -1009,4 +1081,6 @@ schemes:
 # Added by API Auto Mocking Plugin
 # basePath: /61070089/UTNai_API/1.0.0
 # Added by API Auto Mocking Plugin
-basePath: /61070078/UTNai_V01_API/1.0.0
+# basePath: /61070078/UTNai_V01_API/1.0.0
+# Added by API Auto Mocking Plugin
+basePath: /61070089/UTNai_API/1.0.0
