@@ -28,7 +28,15 @@ paths:
         201:
           description: Created
           schema:
-            $ref: '#/definitions/user'
+            properties:
+              statuscode:
+                type: string
+                example: "2010001"
+              statustext:
+                type: string
+                example: "Created"
+              register:
+                $ref: '#/definitions/user'
         400:
           description: Plase Enter Information
           schema:
@@ -73,8 +81,10 @@ paths:
                 type: string
                 example: Login successful
               token:
-                type: string
-                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+                properties:
+                  token:
+                    type: object
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
         400:
           description: Login is unsuccessful
           schema:
@@ -107,7 +117,7 @@ paths:
             properties:
               statusCode:
                 type: integer
-                example: 2000001
+                example: 2000002
               statusText:
                 type: string
                 example: OK
@@ -149,7 +159,7 @@ paths:
               properties:
                 statusCode:
                   type: integer
-                  example: 2000001
+                  example: 2000003
                 statusText:
                   type: string
                   example: OK
@@ -192,7 +202,7 @@ paths:
               properties:
                 statusCode:
                   type: integer
-                  example: 4000001
+                  example: 4000004
                 statusText:
                   type: string
                   example: Bad request
@@ -217,7 +227,7 @@ paths:
             properties:
               statusCode:
                 type: integer
-                example: 2000001
+                example: 2000004
               statusText:
                 type: string
                 example: OK
@@ -239,11 +249,11 @@ paths:
                 properties:
                   statuscode:
                     type: string
-                    example: "2000002"
+                    example: "2000005"
                   statustext:
                     type: string
                     example: "Successful"
-                  get:
+                  show:
                     $ref: '#/definitions/category'
 
     post:
@@ -270,7 +280,7 @@ paths:
                   statustext:
                     type: string
                     example: "Create is successful"
-                  post:
+                  created:
                     $ref: '#/definitions/category'
 
     put:
@@ -297,7 +307,7 @@ paths:
               statustext:
                 type: string
                 example: "Update is successful"
-              put:
+              Edited:
                 $ref: '#/definitions/category'
         400:
           description: Create is unsuccessful
@@ -306,10 +316,10 @@ paths:
                 properties:
                   statuscode:
                     type: string
-                    example: "4000003"
+                    example: "4000005"
                   statustext:
                     type: string
-                    example: "Create is unsuccessful"
+                    example: "Update is unsuccessful"
 
   /role:
     post:
@@ -332,7 +342,7 @@ paths:
             properties:
               statusCode:
                 type: integer
-                example: 2000001
+                example: 2000006
               statusText:
                 type: string
                 example: Role selected!
@@ -352,7 +362,7 @@ paths:
             properties:
               statuscode:
                 type: string
-                example: "2000001"
+                example: "2000007"
               statustext:
                 type: string
                 example: "Successful"
@@ -380,11 +390,11 @@ paths:
             properties:
                 statuscode:
                   type: string
-                  example: "2000001"
+                  example: "2000008"
                 statustext:
                   type: string
                   example: "Successful"
-                get:
+                profile:
                   $ref: '#/definitions/profile_employee'
 
   /location/post:
@@ -406,10 +416,10 @@ paths:
             properties:
               statusCode:
                 type: string
-                example: "40800003"
+                example: "20000009"
               statusText:
                 type: string
-                example: Request Timeout
+                example: Show post successful
               posts:
                 type: array
                 items:
@@ -447,7 +457,7 @@ paths:
             properties:
               statusCode:
                 type: integer
-                example: 2000001
+                example: 2000010
               statusText:
                 type: string
                 example: E-mail sent!
@@ -476,7 +486,7 @@ paths:
             properties:
               statusCode:
                 type: integer
-                example: 2000001
+                example: 2000011
               statusText:
                 type: string
                 example: OK
@@ -508,7 +518,7 @@ paths:
             properties:
               statusCode:
                 type: integer
-                example: 2000001
+                example: 2000012
               statusText:
                 type: string
                 example: Deleted
@@ -518,7 +528,7 @@ paths:
             properties:
               statusCode:
                 type: integer
-                example: 4000001
+                example: 4000006
               statusText:
                 type: string
                 example: Bad request
@@ -543,7 +553,7 @@ paths:
             properties:
               statusCode:
                 type: integer
-                example: 2000001
+                example: 2000013
               statusText:
                 type: string
                 example: Shop found!
@@ -579,7 +589,7 @@ paths:
             properties:
               statusCode:
                 type: integer
-                example: 2000001
+                example: 20000014
               statusText:
                 type: string
                 example: OK
@@ -606,7 +616,7 @@ paths:
             properties:
                 statuscode:
                   type: string
-                  example: "2000001"
+                  example: "2000015"
                 statustext:
                   type: string
                   example: "Successful"
@@ -626,7 +636,7 @@ paths:
             properties:
                 statuscode:
                   type: string
-                  example: "2000001"
+                  example: "2000016"
                 statustext:
                   type: string
                   example: "Successful"
@@ -648,7 +658,7 @@ paths:
             properties:
                 statuscode:
                   type: string
-                  example: "2000001"
+                  example: "2000017"
                 statustext:
                   type: string
                   example: "Successful"
@@ -676,11 +686,11 @@ paths:
             properties:
                 statuscode:
                   type: string
-                  example: "2000001"
+                  example: "2000018"
                 statustext:
                   type: string
                   example: "Successful"
-                get:
+                profile:
                   $ref: '#/definitions/profile_employee'
 
   /employer/profile:
@@ -696,11 +706,11 @@ paths:
             properties:
               statuscode:
                   type: string
-                  example: "2000001"
+                  example: "2000019"
               statustext:
                 type: string
                 example: "Successful"
-              get:
+              profile:
                 $ref: '#/definitions/profile_employer'
 
   
@@ -723,11 +733,11 @@ paths:
             properties:
               statuscode:
                 type: string
-                example: "2000001"
+                example: "2000020"
               statustext:
                 type: string
                 example: "Successful"
-              put:
+              edited:
                 $ref: '#/definitions/profile_employer'
         400:
           description: Login is unsuccessful
@@ -736,25 +746,28 @@ paths:
                 properties:
                   statuscode:
                     type: string
-                    example: "4000003"
+                    example: "4000007"
                   statustext:
                     type: string
                     example: "Create is unsuccessful"
-                  companyname:
-                    type: string
-                    example: "Plase Enter Company Name"
-                  phonenumber:
-                    type: string
-                    example: "Plase Enter Phone Number"
-                  email:
-                    type: string
-                    example: "Plase Enter Email"
-                  website:
-                    type: string
-                    example: "Plase Enter Website"
-                  address:
-                    type: string
-                    example: "Plase Enter Address"
+                  edit:
+                    type: object
+                    properties:
+                      companyname:
+                        type: string
+                        example: "Plase Enter Company Name"
+                      phonenumber:
+                        type: string
+                        example: "Plase Enter Phone Number"
+                      email:
+                        type: string
+                        example: "Plase Enter Email"
+                      website:
+                        type: string
+                        example: "Plase Enter Website"
+                      address:
+                        type: string
+                        example: "Plase Enter Address"
 
   /package/{levelID}:
     get:
@@ -775,12 +788,31 @@ paths:
             properties:
               statuscode:
                 type: string
-                example: "2000001"
+                example: "2000021"
               statustext:
                 type: string
                 example: "Successful"
-              get:
+              package:
                 $ref: '#/definitions/package'
+                
+  /logout:
+    delete:
+      tags:
+      - User
+      summary: Logout
+      description: ""
+      operationId: logout
+      responses:
+        200:
+          description: Deleted
+          schema:
+            properties:
+              statuscode:
+                type: integer
+                example: "2000022"
+              statustext:
+                type: string
+                example: "Token Deleted"
 
 definitions:
   filter_employee:
@@ -1083,4 +1115,6 @@ schemes:
 # Added by API Auto Mocking Plugin
 # basePath: /61070078/UTNai_V01_API/1.0.0
 # Added by API Auto Mocking Plugin
-basePath: /61070089/UTNai_API/1.0.0
+# basePath: /61070089/UTNai_API/1.0.0
+# Added by API Auto Mocking Plugin
+basePath: /61070078/UTNai_V01_API/1.0.0
