@@ -13,7 +13,7 @@ tags:
 - name: Post #[Tae]
   #list[get], post, put, show[get], del
 - name: Profile #[Tae]
-  #company [employer], profile[employee], chanpass
+  #company [employer], profile[employee], changepass
 
 paths:
 #Authentication ----------------------------------------------------------------
@@ -21,7 +21,7 @@ paths:
     post:
       tags:
       - Auth
-      summary: create user
+      summary: Create user
       description: This function for create user
       operationId: createUser
       parameters:
@@ -43,7 +43,7 @@ paths:
                 type: string
                 example: "Created"
               register:
-                $ref: '#/definitions/user'
+                $ref: '#/definitions/returnregis'
         400:
           description: Plase Enter Information
           schema:
@@ -55,6 +55,14 @@ paths:
                   statustext:
                     type: string
                     example: "Field not complete"
+                  text:
+                    properties:
+                      th:
+                        type: string
+                        example: ข้อมูลไม่ครบถ้วน
+                      en:
+                        type: string
+                        example: Field not complete
   
   /auth/login/email:
     post:
@@ -102,6 +110,14 @@ paths:
               statustext:
                 type: string
                 example: "Login is unsuccessful"
+              text:
+                properties:
+                  th:
+                    type: string
+                    example: ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง
+                  en:
+                    type: string
+                    example: Invalid username or password
 
   /auth/login/facebook:
     post:
@@ -120,9 +136,9 @@ paths:
             email:
               type: string
               example: sanchez@mail.com
-            password:
+            facebookToken:
               type: string
-              example: rickiest_rick
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
       responses: 
         200:
           description: Login is successful
@@ -149,6 +165,14 @@ paths:
               statustext:
                 type: string
                 example: "Login is unsuccessful"
+              text:
+                properties:
+                  th:
+                    type: string
+                    example: ลงชื่อเข้าใช้ไม่สำเร็จ
+                  en:
+                    type: string
+                    example: Login unsuccessful.
 
   /auth/login/google:
     post:
@@ -167,9 +191,9 @@ paths:
             email:
               type: string
               example: sanchez@mail.com
-            password:
+            googleToken:
               type: string
-              example: rickiest_rick
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
       responses: 
         200:
           description: Login is successful
@@ -196,6 +220,14 @@ paths:
               statustext:
                 type: string
                 example: "Login is unsuccessful"
+              text:
+                properties:
+                  th:
+                    type: string
+                    example: ลงชื่อเข้าใช้ไม่สำเร็จ
+                  en:
+                    type: string
+                    example: Login unsuccessful.
  
   /auth/otp/send:
     post:
@@ -212,10 +244,10 @@ paths:
           properties:
             email:
               type: string
-              example: sanchez@mail.co
+              example: sanchez@mail.com
       responses:
         200:
-          description: Reseting E-mail sent
+          description: Reseting E-mail sent to server
           schema:
             properties:
               statusCode:
@@ -224,32 +256,14 @@ paths:
               statusText:
                 type: string
                 example: E-mail sent!
-    put:
-      tags:
-      - Auth
-      summary: "Reset Password"
-      description: ""
-      parameters:
-      - in: "body"
-        name: "reset"
-        description: ""
-        required: true
-        schema:
-          properties:
-            email:
-              type: string
-              example: sanchez@mail.co
-      responses:
-        200:
-          description: Reseting E-mail sent
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000010
-              statusText:
-                type: string
-                example: E-mail sent!
+              payload:
+                properties:
+                  refNo:
+                    type: integer
+                    example: 1872
+                  OTP:
+                    type: integer
+                    example: 1547
 
   /auth/otp/check:
     post:
@@ -266,10 +280,16 @@ paths:
           properties:
             email:
               type: string
-              example: sanchez@mail.co
+              example: sanchez@mail.com
+            otp:
+              type: integer
+              example: 4834
+            refNo:
+              type: integer
+              example: 1148
       responses:
         200:
-          description: Reseting E-mail sent
+          description: ""
           schema:
             properties:
               statusCode:
@@ -277,11 +297,39 @@ paths:
                 example: 2000010
               statusText:
                 type: string
-                example: E-mail sent!
+                example: OTP valid
+              text:
+                properties:
+                  th:
+                    type: string
+                    example: OTP ถูกต้อง
+                  en:
+                    type: string
+                    example: OTP valid
+        400:
+          description: ""
+          schema:
+            properties:
+              statusCode:
+                type: integer
+                example: 4000004
+              statusText:
+                type: string
+                example: Invalid OTP
+              text:
+                properties:
+                  th:
+                    type: string
+                    example: OTP ไม่ถูกต้อง
+                  en:
+                    type: string
+                    example: Invalid OTP
+                
+  /auth/changepass:
     put:
       tags:
       - Auth
-      summary: "Reset Password"
+      summary: "Reset password from token"
       description: ""
       parameters:
       - in: "body"
@@ -290,12 +338,18 @@ paths:
         required: true
         schema:
           properties:
-            email:
+            changepassToken:
               type: string
-              example: sanchez@mail.co
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+            newPass:
+              type: string
+              example: Rickiest_rick
+            confirm:
+              type: string
+              example: Rickiest_rick
       responses:
         200:
-          description: Reseting E-mail sent
+          description: Password Changed!
           schema:
             properties:
               statusCode:
@@ -303,35 +357,8 @@ paths:
                 example: 2000010
               statusText:
                 type: string
-                example: E-mail sent!
-
-  /auth/changpass:
-    put:
-      tags:
-      - Auth
-      summary: "Reset Password"
-      description: ""
-      parameters:
-      - in: "body"
-        name: "reset"
-        description: ""
-        required: true
-        schema:
-          properties:
-            email:
-              type: string
-              example: sanchez@mail.co
-      responses:
-        200:
-          description: Reseting E-mail sent
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000010
-              statusText:
-                type: string
-                example: E-mail sent!
+                example: Password Changed!
+  
   
   /auth/logout:
     post:
@@ -342,7 +369,7 @@ paths:
       operationId: logout
       responses:
         200:
-          description: Deleted
+          description: Token deleted
           schema:
             properties:
               statuscode:
@@ -350,7 +377,15 @@ paths:
                 example: "2000022"
               statustext:
                 type: string
-                example: "Deleted"      
+                example: "Deleted"   
+              text:
+                properties:
+                  th:
+                    type: string
+                    example: ออกจากระบบสำเร็จ
+                  en:
+                    type: string
+                    example: Logout successful
 
 #Profile -----------------------------------------------------------------------
 
@@ -780,7 +815,7 @@ paths:
       - Employee
       summary: Shop filter
       description: ""
-      operationId: ""
+      operationId: "filter"
       parameters:
         - in: "body"
           name: "filter"
@@ -792,12 +827,36 @@ paths:
           description: OK
           schema:
             properties:
-              shop1:
+              shopId_1:
+                type: integer
+                example: 128
+              shopId_2:
+                type: integer
+                example: 256
+              shopId_3:
+                type: integer
+                example: 152
+  
+  /employee/map:
+    get:
+      tags:
+      - Employee
+      summary: "Map function"
+      description: ""
+      responses:
+        200:
+          description: Show map object
+          schema:
+            properties:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
                 type: string
-                example: starbuck
-              shop2:
-                type: string
-                example: amazon
+                example: OK
+              payload:
+                $ref: '#/definitions/post'
+      
                 
   /employee/chat: #This page show chats list
     get:
@@ -805,6 +864,16 @@ paths:
       - Employee
       summary: "This page show chat list"
       description: ""
+      parameters:
+      - in: "body"
+        name: ""
+        description: ""
+        required: true
+        schema:
+          properties:
+            token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
       responses:
         200:
           description: OK
@@ -819,28 +888,39 @@ paths:
                 chats:
                   type: array
                   items:
-                    $ref: '#/definitions/post'
+                    $ref: '#/definitions/employerlist'
 
-  /employee/interest:
-    post:
+  /employee/interest/list:
+    get:
       tags:
       - Employee
-      summary: Interest selection
+      summary: Show employee's liked employer list
       description: ""
       parameters:
       - in: "body"
-        name: "interest data"
+        name: ""
         description: ""
         required: true
         schema:
-          $ref: '#/definitions/post'
+          properties:
+            token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
       responses:
         200:
-          description: Interest selected
+          description: Successful
           schema:
-            $ref: '#/definitions/post'
+            properties:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
+                type: string
+                example: OK
+              chatList:
+                  $ref: '#/definitions/employerlist'
         400:
-          description: Field not complete
+          description: Bad request
           schema:
                 type: object
                 properties:
@@ -849,10 +929,65 @@ paths:
                     example: "40000003"
                   statusText:
                     type: string
-                    example: Field not complete
-                  interest:
+                    example: Bad request
+                  text:
+                    properties:
+                      th:
+                        type: string
+                        example: คำร้องขอผิดพลาด
+                      en:
+                        type: string
+                        example: Bad request
+  /employee/interest/show:
+    get:
+      tags:
+      - Employee
+      summary: Show specific employee profile
+      description: ""
+      parameters:
+      - in: "body"
+        name: ""
+        description: ""
+        required: true
+        schema:
+          properties:
+            employerId:
+              type: integer
+              example: 489
+      responses:
+        200:
+          description: "OK"
+          schema:
+            properties:
+              statusCode:
+                type: integer
+                example: 2000001
+              statusText:
+                type: string
+                example: OK
+              payload:
+                $ref: '#/definitions/profile_employer'
+        
+        400:
+          description: Bad request
+          schema:
+            properties:
+              statusCode:
+                type: integer
+                example: 4000001
+              statusText:
+                type: string
+                example: Bad request
+              text:
+                properties:
+                  th:
                     type: string
-                    example: "Please select your interest"
+                    example: การร้องขอผิดพลาด(โปรไฟล์อาจถูกลบ)
+                  en:
+                    type: string
+                    example: Bad request(Profile maybe deleted)
+            
+                      
 
   #/employee/map
 
@@ -861,7 +996,7 @@ paths:
   /employer/{shopId}:
     get:
       tags:
-      - EmployerR
+      - Employer
       summary: show shop information
       description: ""
       operationId: getInformation
@@ -888,7 +1023,7 @@ paths:
   /location/post:
     get:
       tags: 
-      - EmployerR
+      - Employer
       summary: "This page show post list"
       description: ""
       parameters:
@@ -925,7 +1060,7 @@ paths:
   /interest/employee/{userID}:
     get:
       tags:
-      - EmployerR
+      - Employer
       summary: "Employee Information"
       description: ""
       parameters:
@@ -951,7 +1086,7 @@ paths:
   /employer/profile:
     get:
       tags:
-      - EmployerR
+      - Employer
       summary: "Employer Information"
       description: ""
       responses:
@@ -971,7 +1106,7 @@ paths:
   /employer/profile/edit:
     put:
       tags:
-      - EmployerR
+      - Employer
       summary: "For employer to edit their profile"
       description: ""
       parameters:
@@ -1163,11 +1298,11 @@ definitions: #------------------------------------------------------------------
   filter_employee:
     type: object
     required:
-    - dist
+    - distant
     - province
     - category
     properties:
-      dist:
+      distant:
         type: integer
         example: 50
       province:
@@ -1221,6 +1356,9 @@ definitions: #------------------------------------------------------------------
     - firstname
     - lastname
     - id
+    - interest
+    - role
+    - lang
     properties:
       email:
         type: string
@@ -1243,19 +1381,18 @@ definitions: #------------------------------------------------------------------
       id:
         type: string
         example: 152
+      role:
+        type: string
+        example: Employee
+      lang:
+        type: string
+        example: Thai
+      interest:
+        type: string
+        example: Coffee shop
 
   post:
     type: object
-    required: 
-    - postID
-    - category
-    - shopname
-    - description
-    - wage
-    - min
-    - max
-    - location
-    - province
     properties:
       postID:
         type: integer
@@ -1285,56 +1422,6 @@ definitions: #------------------------------------------------------------------
         type: string
         example: bangkok
 
-  interest:
-    type: object
-    required:
-    - interest
-    properties:
-      interest:
-        type: string
-        example: Coffee shop
-
-  employee_list:
-    type: object
-    required: 
-    - id
-    - name
-    - occupation
-    - age
-    properties:
-      id:
-        type: integer
-        example: 1
-      name:
-        type: string
-        example: tae
-      occupation:
-        type: string
-        example: Selesperson
-      age:
-        type: integer
-        example: 24
-
-  post_list:
-    type: object
-    required: 
-    - postID
-    - shopname
-    - category
-    - province
-    properties:
-      postID:
-        type: integer
-        example: 1
-      shopname:
-        type: string
-        example: U-Coffee
-      category:
-        type: string
-        example: Coffee Shop
-      province:
-        type: string
-        example: Bangkok
 
   profile_employee:
     type: object
@@ -1438,6 +1525,53 @@ definitions: #------------------------------------------------------------------
       positions:
         type: integer
         example: 1
+  
+  employerlist:
+    type: object
+    properties:
+      employerId1:
+        type: integer
+        example: 489
+      employerId2:
+        type: integer
+        example: 424
+      employerId3:
+        type: integer
+        example: 749
+  
+  returnregis: 
+    type: object
+    properties:
+      email:
+        type: string
+        example: tae_chanhom@hotmail.com
+      gender:
+        type: string
+        example: male
+      brithday:
+        type: string
+        example: 14/12/42
+      firstname:
+        type: string
+        example: John
+      lastname:
+        type: string
+        example: Smith
+      id:
+        type: string
+        example: 152
+      role:
+        type: string
+        example: Employee
+      lang:
+        type: string
+        example: Thai
+      interest:
+        type: string
+        example: Coffee shop
+
+          
+      
 
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
@@ -1455,4 +1589,6 @@ schemes:
 # Added by API Auto Mocking Plugin
 # basePath: /61070089/UTNai_API/1.0.0
 # Added by API Auto Mocking Plugin
-basePath: /61070078/UTNai_V01_API/1.0.0
+# basePath: /61070078/UTNai_V01_API/1.0.0
+# Added by API Auto Mocking Plugin
+basePath: /61070089/UTNai_API/1.0.0
