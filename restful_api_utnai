@@ -1,1594 +1,1355 @@
-swagger: '2.0'
+openapi: 3.0.0
+servers:
+  - url: 'https://virtserver.swaggerhub.com/61070078/UTNai_V01_API/1.0.0'
 info:
   description: This is a simple API
-  version: 1.0.0
+  version: "1.0.0-oas3"
   title: UTNai API
 tags:
-- name: Employer #[Tae]
-  #filter, chat, interest, neardy, package
-- name: Employee #[Jab]
-  #filter, chat, interest, map
-- name: Auth #[Jab]
-  #login, logout, forgotpass, register
-- name: Post #[Tae]
-  #list[get], post, put, show[get], del
-- name: Profile #[Tae]
-  #company [employer], profile[employee], changepass
+  - name: Employee
+  - name: Auth
+  - name: Post
+  - name: Interrest
+  - name: Chat
+  - name: Package
+  - name: Employee Profile
+  - name: Employer Profile
+  - name: Account
 
 paths:
-#Authentication ----------------------------------------------------------------
+#Auth --------------------------------------------------------------------------
+
   /auth/register:
     post:
       tags:
-      - Auth
+        - Auth
       summary: Create user
       description: This function for create user
       operationId: createUser
-      parameters:
-      - in: "body"
-        name: "infomation"
-        description: "Created user object"
-        required: true
-        schema:
-          $ref: "#/definitions/user"
+      security: []
       responses:
-        201:
+        '201':
           description: Created
-          schema:
-            properties:
-              statuscode:
-                type: string
-                example: "2010001"
-              statustext:
-                type: string
-                example: "Created"
-              register:
-                $ref: '#/definitions/returnregis'
-        400:
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statuscode:
+                    type: string
+                    example: '2010001'
+                  statustext:
+                    type: string
+                    example: Created
+                  user:
+                    $ref: '#/components/schemas/returnregis'
+                type: object
+        '400':
           description: Plase Enter Information
-          schema:
+          content:
+            '*/*':
+              schema:
                 type: object
                 properties:
                   statuscode:
                     type: string
-                    example: "4000001"
+                    example: '4000001'
                   statustext:
                     type: string
-                    example: "Field not complete"
-                  text:
-                    properties:
-                      th:
-                        type: string
-                        example: ข้อมูลไม่ครบถ้วน
-                      en:
-                        type: string
-                        example: Field not complete
-  
+                    example: Field not complete
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+        description: Created user object
+        required: true
   /auth/login/email:
     post:
-      tags: 
-      - Auth
-      summary: login user 
+      tags:
+        - Auth
+      summary: login user
       description: This function for login
       operationId: login user
-      parameters: 
-      - in: "body"
-        name: "data"
-        description: "load data from server"
-        required: true
-        schema:
-          properties:
-            email:
-              type: string
-              example: sanchez@mail.com
-            password:
-              type: string
-              example: rickiest_rick
-      responses: 
-        200:
+      security: []
+      responses:
+        '200':
           description: Login is successful
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000001
-              statusText:
-                type: string
-                example: Login successful
-              token:
+          content:
+            '*/*':
+              schema:
                 properties:
-                  token:
-                    type: object
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-        400:
+                  statusCode:
+                    type: integer
+                    example: 2000001
+                  statusText:
+                    type: string
+                    example: Login successful
+                  user:
+                    $ref: '#/components/schemas/returnregis'
+                type: object
+        '400':
           description: Login is unsuccessful
-          schema:
-            properties:
-              statuscode:
-                type: string
-                example: "4000002"
-              statustext:
-                type: string
-                example: "Login is unsuccessful"
-              text:
+          content:
+            '*/*':
+              schema:
                 properties:
-                  th:
+                  statuscode:
                     type: string
-                    example: ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง
-                  en:
+                    example: '4000002'
+                  statustext:
                     type: string
-                    example: Invalid username or password
-
+                    example: Login is unsuccessful
+                type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  example: sanchez@mail.com
+                password:
+                  type: string
+                  example: rickiest_rick
+              type: object
+        description: load data from server
+        required: true
   /auth/login/facebook:
     post:
-      tags: 
-      - Auth
-      summary: login user 
+      tags:
+        - Auth
+      summary: login user
       description: This function for login
       operationId: login users
-      parameters: 
-      - in: "body"
-        name: "data"
-        description: "load data from server"
-        required: true
-        schema:
-          properties:
-            email:
-              type: string
-              example: sanchez@mail.com
-            facebookToken:
-              type: string
-              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-      responses: 
-        200:
+      responses:
+        '200':
           description: Login is successful
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000001
-              statusText:
-                type: string
-                example: Login successful
-              token:
+          content:
+            '*/*':
+              schema:
                 properties:
+                  statusCode:
+                    type: integer
+                    example: 2000001
+                  statusText:
+                    type: string
+                    example: Login successful
                   token:
+                    properties:
+                      email:
+                        type: string
+                        example: sanchez@mail.com
+                      token:
+                        type: object
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
                     type: object
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-        400:
+                type: object
+        '400':
           description: Login is unsuccessful
-          schema:
-            properties:
-              statuscode:
-                type: string
-                example: "4000002"
-              statustext:
-                type: string
-                example: "Login is unsuccessful"
-              text:
+          content:
+            '*/*':
+              schema:
                 properties:
-                  th:
+                  statuscode:
                     type: string
-                    example: ลงชื่อเข้าใช้ไม่สำเร็จ
-                  en:
+                    example: '4000002'
+                  statustext:
                     type: string
-                    example: Login unsuccessful.
-
+                    example: Login is unsuccessful
+                type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  example: sanchez@mail.com
+                facebookId:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+              type: object
+        description: load data from server
+        required: true
   /auth/login/google:
     post:
-      tags: 
-      - Auth
-      summary: login user 
+      tags:
+        - Auth
+      summary: login user
       description: This function for login
       operationId: loginUser
-      parameters: 
-      - in: "body"
-        name: "data"
-        description: "load data from server"
-        required: true
-        schema:
-          properties:
-            email:
-              type: string
-              example: sanchez@mail.com
-            googleToken:
-              type: string
-              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-      responses: 
-        200:
+      responses:
+        '200':
           description: Login is successful
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000001
-              statusText:
-                type: string
-                example: Login successful
-              token:
+          content:
+            '*/*':
+              schema:
                 properties:
+                  statusCode:
+                    type: integer
+                    example: 2000001
+                  statusText:
+                    type: string
+                    example: Login successful
                   token:
+                    properties:
+                      token:
+                        type: object
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
                     type: object
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-        400:
+                type: object
+        '400':
           description: Login is unsuccessful
-          schema:
-            properties:
-              statuscode:
-                type: string
-                example: "4000002"
-              statustext:
-                type: string
-                example: "Login is unsuccessful"
-              text:
+          content:
+            '*/*':
+              schema:
                 properties:
-                  th:
+                  statuscode:
                     type: string
-                    example: ลงชื่อเข้าใช้ไม่สำเร็จ
-                  en:
+                    example: '4000002'
+                  statustext:
                     type: string
-                    example: Login unsuccessful.
- 
+                    example: Login is unsuccessful
+                type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  example: sanchez@mail.com
+                googleId:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+              type: object
+        description: load data from server
+        required: true
   /auth/otp/send:
     post:
       tags:
-      - Auth
-      summary: "Reset Password"
-      description: ""
-      parameters:
-      - in: "body"
-        name: "reset"
-        description: ""
-        required: true
-        schema:
-          properties:
-            email:
-              type: string
-              example: sanchez@mail.com
+        - Auth
+      summary: Reset Password
+      description: ''
       responses:
-        200:
+        '200':
           description: Reseting E-mail sent to server
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000010
-              statusText:
-                type: string
-                example: E-mail sent!
-              payload:
+          content:
+            '*/*':
+              schema:
                 properties:
-                  refNo:
+                  statusCode:
                     type: integer
-                    example: 1872
+                    example: 2000010
+                  statusText:
+                    type: string
+                    example: E-mail sent!
                   OTP:
-                    type: integer
-                    example: 1547
-
+                    properties:
+                      refNo:
+                        type: integer
+                        example: 1872
+                      email:
+                        type: string
+                        example: sanchez@mail.com
+                      expire:
+                        type: string
+                        example: 2018-10-18-09-45-33
+                    type: object
+                type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  example: sanchez@mail.com
+              type: object
+        required: true
   /auth/otp/check:
     post:
       tags:
-      - Auth
-      summary: "Reset Password"
-      description: ""
-      parameters:
-      - in: "body"
-        name: "reset"
-        description: ""
-        required: true
-        schema:
-          properties:
-            email:
-              type: string
-              example: sanchez@mail.com
-            otp:
-              type: integer
-              example: 4834
-            refNo:
-              type: integer
-              example: 1148
+        - Auth
+      summary: Reset Password
+      description: ''
       responses:
-        200:
-          description: ""
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000010
-              statusText:
-                type: string
-                example: OTP valid
-              text:
+        '200':
+          description: ''
+          content:
+            '*/*':
+              schema:
                 properties:
-                  th:
-                    type: string
-                    example: OTP ถูกต้อง
-                  en:
+                  statusCode:
+                    type: integer
+                    example: 2000010
+                  statusText:
                     type: string
                     example: OTP valid
-        400:
-          description: ""
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 4000004
-              statusText:
-                type: string
-                example: Invalid OTP
-              text:
+                type: object
+        '400':
+          description: ''
+          content:
+            '*/*':
+              schema:
                 properties:
-                  th:
-                    type: string
-                    example: OTP ไม่ถูกต้อง
-                  en:
+                  statusCode:
+                    type: integer
+                    example: 4000004
+                  statusText:
                     type: string
                     example: Invalid OTP
-                
+                type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  example: sanchez@mail.com
+                otp:
+                  type: integer
+                  example: 4834
+                refNo:
+                  type: integer
+                  example: 1148
+              type: object
+        required: true
   /auth/changepass:
     put:
       tags:
-      - Auth
-      summary: "Reset password from token"
-      description: ""
-      parameters:
-      - in: "body"
-        name: "reset"
-        description: ""
-        required: true
-        schema:
-          properties:
-            changepassToken:
-              type: string
-              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-            newPass:
-              type: string
-              example: Rickiest_rick
-            confirm:
-              type: string
-              example: Rickiest_rick
+        - Auth
+      summary: Reset password from token
+      description: ''
       responses:
-        200:
+        '200':
           description: Password Changed!
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000010
-              statusText:
-                type: string
-                example: Password Changed!
-  
-  
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 2000010
+                  statusText:
+                    type: string
+                    example: Password Changed!
+                type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                changepassToken:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+                newPass:
+                  type: string
+                  example: Rickiest_rick
+                confirm:
+                  type: string
+                  example: Rickiest_rick
+              type: object
+        required: true
   /auth/logout:
     post:
       tags:
-      - Auth
+        - Auth
       summary: Logout
-      description: ""
+      description: ''
       operationId: logout
       responses:
-        200:
+        '200':
           description: Token deleted
-          schema:
-            properties:
-              statuscode:
-                type: integer
-                example: "2000022"
-              statustext:
-                type: string
-                example: "Deleted"   
-              text:
+          content:
+            '*/*':
+              schema:
                 properties:
-                  th:
+                  statuscode:
+                    type: integer
+                    example: '2000022'
+                  statustext:
                     type: string
-                    example: ออกจากระบบสำเร็จ
-                  en:
-                    type: string
-                    example: Logout successful
-
-#Profile -----------------------------------------------------------------------
-
-  /profile/changpass:
+                    example: Deleted
+                type: object
+                
+               
+#Account -----------------------------------------------------------------------
+  /account:
     put:
       tags:
-      - Profile
+        - Account
       summary: Change Password
-      description: ""
+      description: ''
       operationId: changePass
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "Updated user object"
-          required: true
-          schema:
-            $ref: "#/definitions/change"
       responses:
-        200:
+        '200':
           description: Changed
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000011
-              statusText:
-                type: string
-                example: OK
-
-  /profile/company: #company [employer]
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 2000011
+                  statusText:
+                    type: string
+                    example: OK
+                type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/change'
+        description: Updated user object
+        required: true
+    delete:
+      tags:
+        - Account
+      summary: Delete Accout
+      description: ''
+      operationId: Delete
+      responses:
+        '200':
+          description: Deleted
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 2000012
+                  statusText:
+                    type: string
+                    example: Deleted
+                type: object
+        '400':
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 4000006
+                  statusText:
+                    type: string
+                    example: Bad request
+                type: object
+                
+#Employee Profile -----------------------------------------------------------------------
+  /profile/employee:
     get:
       tags:
-      - Profile
-      summary: "Employer Information"
-      description: ""
+        - Employee Profile
+      summary: Show employee profile
+      description: ''
       responses:
-        200:
+        '200':
           description: OK
-          schema:
-            $ref: '#/definitions/profile_employer'
-        408:
-            description: Request Timeout 
-            schema:
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/profile_employee'
+        '400':
+          description: This id does not exist
+    put:
+      tags:
+        - Employee Profile
+      summary: For employee to edit their profile
+      description: ''
+      operationId: editProfile
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/profile_employee'
+      requestBody:
+        $ref: '#/components/requestBodies/profile_employee'
+        
+#Employeer Profile -----------------------------------------------------------------------
+  /profile/employeer:
+    get:
+      tags:
+        - Employer Profile
+      summary: Employer Information
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/profile_employer'
+        '408':
+          description: Request Timeout
+          content:
+            '*/*':
+              schema:
                 type: object
                 properties:
                   statusCode:
                     type: string
-                    example: "40800009"
+                    example: '40800009'
                   statusText:
                     type: string
                     example: Request Timeout
     put:
       tags:
-      - Profile
-      summary: "For employer to edit their profile"
-      description: ""
-      parameters:
-      - in: "body"
-        name: "employer profile edit"
-        required: true
-        schema:
-          $ref: '#/definitions/profile_employer'
+        - Employer Profile
+      summary: For employer to edit their profile
+      description: ''
       responses:
-        200:
+        '200':
           description: OK
-          schema:
-            $ref: '#/definitions/profile_employer'
-        400:
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/profile_employer'
+        '400':
           description: Login is unsuccessful
-          schema:
+          content:
+            '*/*':
+              schema:
                 type: object
                 properties:
                   statuscode:
                     type: string
-                    example: "4000003"
+                    example: '4000003'
                   statustext:
                     type: string
-                    example: "Create is unsuccessful"
+                    example: Create is unsuccessful
                   companyname:
                     type: string
-                    example: "Plase Enter Company Name"
+                    example: Plase Enter Company Name
                   phonenumber:
                     type: string
-                    example: "Plase Enter Phone Number"
+                    example: Plase Enter Phone Number
                   email:
                     type: string
-                    example: "Plase Enter Email"
+                    example: Plase Enter Email
                   website:
                     type: string
-                    example: "Plase Enter Website"
+                    example: Plase Enter Website
                   address:
                     type: string
-                    example: "Plase Enter Address"
-
-  /profile/employees: #profile [employee]
-    get:
-      tags:
-      - Profile
-      summary: Show employee profile
-      description: ""
-      responses:
-          200:
-            description: OK
+                    example: Plase Enter Address
+      requestBody:
+        content:
+          application/json:
             schema:
-              $ref: '#/definitions/profile_employee'
-          400:
-            description: This id does not exist
-    put:
-      tags:
-      - Profile
-      summary: "For employee to edit their profile"
-      description: ""
-      operationId: editProfile
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "Updated user object"
-          required: true
-          schema:
-            $ref: "#/definitions/profile_employee"
-      responses:
-        200:
-          description: OK
-          schema:
-            $ref: '#/definitions/profile_employee' 
-
-#Post --------------------------------------------------------------------------
-
-  /post/{postID}: #[employer]
-    get: #Show infomation post's employer
-      tags: 
-      - Post
-      summary: Show infomation post's employer
-      description: ""
-      parameters:
-        - in: "path"
-          name: "postID"
-          required: true
-          type: integer
-          format: int32
-      responses:
-        200:
-          description: Successful
-          schema:
-            type: object
-            properties:
-              statuscode:
-                type: string
-                example: "2000005"
-              statustext:
-                type: string
-                example: "Successful"
-              show:
-                $ref: '#/definitions/post'
-    post: #Employer can create  new post in this path.
-      tags: 
-      - Post
-      summary: Employer can create  new post in this path.
-      description: ""
-      parameters: 
-        - in: "body"
-          name: "category edit"
-          description: ""
-          required: true
-          schema:
-            $ref: '#/definitions/post'
-        - in: "path"
-          name: "postID"
-          required: true
-          type: integer
-          format: int32
-      responses:
-        201:
-          description: Created!
-          schema:
-                type: object
-                properties:
-                  statuscode:
-                    type: string
-                    example: "2010002"
-                  statustext:
-                    type: string
-                    example: "Create is successful"
-                  created:
-                    $ref: '#/definitions/post'
-    put: #Employer can edit or update infomation in this path.
-      tags: 
-      - Post
-      summary: Employer can edit or update infomation in this path.
-      description: ""
-      operationId: ""
-      parameters: 
-        - in: "path"
-          name: "postID"
-          required: true
-          type: integer
-          format: int32
-        - in: "body"
-          name: "category edit"
-          description: ""
-          required: true
-          schema:
-            $ref: '#/definitions/post'
-      responses:
-        202:
-          description: Accepted!
-          schema:
-            properties:
-              statuscode:
-                type: string
-                example: "2020001"
-              statustext:
-                type: string
-                example: "Update is successful"
-              Edited:
-                $ref: '#/definitions/post'
-        400:
-          description: Delete is unsuccessful
-          schema:
-                type: object
-                properties:
-                  statuscode:
-                    type: string
-                    example: "4000005"
-                  statustext:
-                    type: string
-                    example: "Update is unsuccessful"           
-    delete: #Employer can delete infomation in this path.
-      tags: 
-      - Post
-      summary: Employer can delete infomation in this path.
-      description: ""
-      parameters:
-        - in: "path"
-          name: "postID"
-          required: true
-          type: integer
-          format: int32
-      responses:
-        202:
-          description: Accepted!
-          schema:
-            properties:
-              statuscode:
-                type: string
-                example: "2020001"
-              statustext:
-                type: string
-                example: "Delete is successful"
-              delete:
-                $ref: '#/definitions/post'
-        400:
-          description: Delete is unsuccessful
-          schema:
-                type: object
-                properties:
-                  statuscode:
-                    type: string
-                    example: "4000005"
-                  statustext:
-                    type: string
-                    example: "Delete is unsuccessful"           
-
-#Employer ----------------------------------------------------------------------
-
-  /employer/filter: #Employer Filter
-    get:
-      tags:
-      - Employer
-      summary: Employer Filter
-      description: ""
-      operationId: ""
-      parameters:
-        - in: "body"
-          name: "filter"
-          required: true
-          schema:
-            $ref: '#/definitions/filter_employer'
-      responses:
-        200:
-          description: Successful
-          schema:
-            properties:
-                statuscode:
-                  type: string
-                  example: "2000015"
-                statustext:
-                  type: string
-                  example: "Successful"
-                get:
-                  $ref: '#/definitions/filter_employer'
-
-  /employer/interests: #This page show interests employee list
-    get:
-      tags: 
-      - Employer
-      summary: "This page show interests employee list"
-      description: ""
-      responses:
-        200:
-          description: Successful
-          schema:
-            properties:
-                statuscode:
-                  type: string
-                  example: "2000017"
-                statustext:
-                  type: string
-                  example: "Successful"
-                interests:
-                  type: array
-                  items:
-                    $ref: '#/definitions/profile_employee'
-
-  /employer/chat: #This page show chats list
-    get:
-      tags: 
-      - Employer
-      summary: "This page show chat list"
-      description: ""
-      responses:
-        200:
-          description: OK
-          schema:
-            properties:
-                statuscode:
-                  type: string
-                  example: "2000016"
-                statustext:
-                  type: string
-                  example: "Successful"
-                chats:
-                  type: array
-                  items:
-                    $ref: '#/definitions/profile_employee'
-
-  /employer/nearby: #This page show employees list
-    get:
-      tags: 
-      - Employer
-      summary: "This page show employee list"
-      description: ""
-      responses:
-        200:
-          description: OK
-          schema:
-            properties:
-                statuscode:
-                  type: string
-                  example: "2000016"
-                statustext:
-                  type: string
-                  example: "Successful"
-                chats:
-                  type: array
-                  items:
-                    $ref: '#/definitions/profile_employee'
-
-  /employer/package/{levelID}: #Show information's package 
-    get:
-      tags: 
-      - Employer
-      summary: "Show package list"
-      description: ""
-      parameters: 
-      - in: "path"
-        name: "levelID"
+              $ref: '#/components/schemas/profile_employer'
         required: true
-        type: integer
-        format: int32
-      responses:
-        200:
-          description: OK
+  
+#Post --------------------------------------------------------------------------
+  /post:
+    post:
+      tags:
+        - Post
+      summary: Employer can create  new post in this path.
+      description: ''
+      parameters:
+        - in: path
+          name: postID
+          required: true
           schema:
-            properties:
-              statuscode:
-                type: string
-                example: "2000021"
-              statustext:
-                type: string
-                example: "Successful"
-              package:
-                $ref: '#/definitions/package'
-
-  /employer/post: #This page show post list
+            type: integer
+            format: int32
+      responses:
+        '201':
+          description: Created!
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  statuscode:
+                    type: string
+                    example: '2010002'
+                  statustext:
+                    type: string
+                    example: Create is successful
+                  post:
+                    $ref: '#/components/schemas/post'
+      requestBody:
+        $ref: '#/components/requestBodies/post'
     get:
-      tags: 
-      - Employer
-      summary: "This page show post list"
-      description: ""
+      tags:
+        - Post
+      summary: This page show post list
+      description: ''
       parameters:
         - in: path
           name: query
-          type: string
           required: true
           description: Search data.
+          schema:
+            type: string
       responses:
-        200:
+        '200':
           description: Successful
-          schema:
-            properties:
-              statusCode:
-                type: string
-                example: "20000009"
-              statusText:
-                type: string
-                example: Show post successful
-              posts:
-                type: array
-                items:
-                  $ref: '#/definitions/post'
-              search:
-                type: object
-                properties:
-                  key:
-                    type: string
-                    example: name
-                  query:
-                    type: string
-                    example: U-coffee
-
-#Employee ----------------------------------------------------------------------
-
-  /employee/filter:
-    get:
-      tags:
-      - Employee
-      summary: Shop filter
-      description: ""
-      operationId: "filter"
-      parameters:
-        - in: "body"
-          name: "filter"
-          required: true
-          schema:
-            $ref: '#/definitions/filter_employee'
-      responses:
-        200:
-          description: OK
-          schema:
-            properties:
-              shopId_1:
-                type: integer
-                example: 128
-              shopId_2:
-                type: integer
-                example: 256
-              shopId_3:
-                type: integer
-                example: 152
-  
-  /employee/map:
-    get:
-      tags:
-      - Employee
-      summary: "Map function"
-      description: ""
-      responses:
-        200:
-          description: Show map object
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000001
-              statusText:
-                type: string
-                example: OK
-              payload:
-                $ref: '#/definitions/post'
-      
-                
-  /employee/chat: #This page show chats list
-    get:
-      tags: 
-      - Employee
-      summary: "This page show chat list"
-      description: ""
-      parameters:
-      - in: "body"
-        name: ""
-        description: ""
-        required: true
-        schema:
-          properties:
-            token:
-              type: string
-              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-      responses:
-        200:
-          description: OK
-          schema:
-            properties:
-                statuscode:
-                  type: string
-                  example: "2000016"
-                statustext:
-                  type: string
-                  example: "Successful"
-                chats:
-                  type: array
-                  items:
-                    $ref: '#/definitions/employerlist'
-
-  /employee/interest/list:
-    get:
-      tags:
-      - Employee
-      summary: Show employee's liked employer list
-      description: ""
-      parameters:
-      - in: "body"
-        name: ""
-        description: ""
-        required: true
-        schema:
-          properties:
-            token:
-              type: string
-              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-      responses:
-        200:
-          description: Successful
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000001
-              statusText:
-                type: string
-                example: OK
-              chatList:
-                  $ref: '#/definitions/employerlist'
-        400:
-          description: Bad request
-          schema:
-                type: object
+          content:
+            '*/*':
+              schema:
                 properties:
                   statusCode:
                     type: string
-                    example: "40000003"
+                    example: '20000009'
                   statusText:
                     type: string
-                    example: Bad request
-                  text:
+                    example: Show post successful
+                  posts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/post'
+                  search:
+                    type: object
                     properties:
-                      th:
+                      key:
                         type: string
-                        example: คำร้องขอผิดพลาด
-                      en:
+                        example: name
+                      query:
                         type: string
-                        example: Bad request
-  /employee/interest/show:
+                        example: U-coffee
+                type: object
+    
+  /post/{postID}:
     get:
       tags:
-      - Employee
-      summary: Show specific employee profile
-      description: ""
-      parameters:
-      - in: "body"
-        name: ""
-        description: ""
-        required: true
-        schema:
-          properties:
-            employerId:
-              type: integer
-              example: 489
-      responses:
-        200:
-          description: "OK"
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000001
-              statusText:
-                type: string
-                example: OK
-              payload:
-                $ref: '#/definitions/profile_employer'
-        
-        400:
-          description: Bad request
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 4000001
-              statusText:
-                type: string
-                example: Bad request
-              text:
-                properties:
-                  th:
-                    type: string
-                    example: การร้องขอผิดพลาด(โปรไฟล์อาจถูกลบ)
-                  en:
-                    type: string
-                    example: Bad request(Profile maybe deleted)
-            
-                      
-
-  #/employee/map
-
-#EmployerR ---------------------------------------------------------------------
- 
-  /employer/{shopId}:
-    get:
-      tags:
-      - Employer
-      summary: show shop information
-      description: ""
-      operationId: getInformation
-      parameters:
-        - in: "path"
-          name: "shopId"
-          required: true
-          type: integer
-          format: int32
-      responses:
-        200:
-          description: OK
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 20000014
-              statusText:
-                type: string
-                example: OK
-              shopInformation:
-                $ref: '#/definitions/post'
-
-  /location/post:
-    get:
-      tags: 
-      - Employer
-      summary: "This page show post list"
-      description: ""
+        - Post
+      summary: Show infomation post's employer
+      description: ''
       parameters:
         - in: path
-          name: query
-          type: string
+          name: postID
           required: true
-          description: Search data.
+          schema:
+            type: integer
+            format: int32
       responses:
-        200:
+        '200':
           description: Successful
-          schema:
-            properties:
-              statusCode:
-                type: string
-                example: "20000009"
-              statusText:
-                type: string
-                example: Show post successful
-              posts:
-                type: array
-                items:
-                  $ref: '#/definitions/post'
-              search:
-                type: object
-                properties:
-                  key:
-                    type: string
-                    example: name
-                  query:
-                    type: string
-                    example: U-coffee
-
-  /interest/employee/{userID}:
-    get:
-      tags:
-      - Employer
-      summary: "Employee Information"
-      description: ""
-      parameters:
-      - in: "path"
-        name: "userID"
-        required: true
-        type: integer
-        format: int32
-      responses:
-        200:
-          description: OK
-          schema:
-            properties:
-                statuscode:
-                  type: string
-                  example: "2000018"
-                statustext:
-                  type: string
-                  example: "Successful"
-                profile:
-                  $ref: '#/definitions/profile_employee'
-
-  /employer/profile:
-    get:
-      tags:
-      - Employer
-      summary: "Employer Information"
-      description: ""
-      responses:
-        200:
-          description: OK
-          schema:
-            properties:
-              statuscode:
-                  type: string
-                  example: "2000019"
-              statustext:
-                type: string
-                example: "Successful"
-              profile:
-                $ref: '#/definitions/profile_employer'
-
-  /employer/profile/edit:
-    put:
-      tags:
-      - Employer
-      summary: "For employer to edit their profile"
-      description: ""
-      parameters:
-      - in: "body"
-        name: "employer profile edit"
-        required: true
-        schema:
-          $ref: '#/definitions/profile_employer'
-      responses:
-        200:
-          description: OK
-          schema:
-            properties:
-              statuscode:
-                type: string
-                example: "2000020"
-              statustext:
-                type: string
-                example: "Successful"
-              edited:
-                $ref: '#/definitions/profile_employer'
-        400:
-          description: Login is unsuccessful
-          schema:
+          content:
+            '*/*':
+              schema:
                 type: object
                 properties:
                   statuscode:
                     type: string
-                    example: "4000007"
+                    example: '2000005'
                   statustext:
                     type: string
-                    example: "Create is unsuccessful"
-                  edit:
-                    type: object
-                    properties:
-                      companyname:
-                        type: string
-                        example: "Plase Enter Company Name"
-                      phonenumber:
-                        type: string
-                        example: "Plase Enter Phone Number"
-                      email:
-                        type: string
-                        example: "Plase Enter Email"
-                      website:
-                        type: string
-                        example: "Plase Enter Website"
-                      address:
-                        type: string
-                        example: "Plase Enter Address"
-
-  /profile/employee: 
-    get:
-      tags:
-      - othder
-      summary: Show employee profile
-      description: ""
-      parameters:
-        - in: "body"
-          name: "token"
-          required: true
-          schema:
-            properties:
-              token:
-                type: string
-                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-      responses:
-          200:
-            description: OK
-            schema:
-              type: object
-              properties:
-                statusCode:
-                  type: integer
-                  example: 2000003
-                statusText:
-                  type: string
-                  example: OK
-                profile:
-                  type: object
-                  properties:
-                    email:
-                      type: string
-                      example: tae_chanhom@hotmail.com
-                    passworld:
-                      type: string
-                      example: 029959866Tae
-                    gender:
-                      type: string
-                      example: male
-                    brithday:
-                      type: string
-                      example: 14/12/42
-                    firstname:
-                      type: string
-                      example: John
-                    lastname:
-                      type: string
-                      example: Smith
-                    interest:
-                      type: string
-                      example: Coffee Shop
-                    age:
-                      type: integer
-                      example: 20
-                    language:
-                      type: string
-                      example: Thai
-                    experience:
-                      type: string
-                      example: none
-          400:
-            description: This id does not exist
-            schema:
-              properties:
-                statusCode:
-                  type: integer
-                  example: 4000004
-                statusText:
-                  type: string
-                  example: Bad request
+                    example: Successful
+                  show:
+                    $ref: '#/components/schemas/post'
     put:
       tags:
-      - othder
-      summary: "For employee to edit their profile"
-      description: ""
+        - Post
+      summary: Employer can edit or update infomation in this path.
+      description: ''
+      operationId: ''
       parameters:
-        - in: "body"
-          name: "body"
-          description: "Updated user object"
+        - in: path
+          name: postID
           required: true
           schema:
-            $ref: "#/definitions/profile_employee"
+            type: integer
+            format: int32
       responses:
-        200:
-          description: OK
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000004
-              statusText:
-                type: string
-                example: OK
-              editedProfile:
-                $ref: '#/definitions/profile_employee' 
+        '202':
+          description: Accepted!
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statuscode:
+                    type: string
+                    example: '2020001'
+                  statustext:
+                    type: string
+                    example: Update is successful
+                  Edited:
+                    $ref: '#/components/schemas/post'
+                type: object
+        '400':
+          description: Delete is unsuccessful
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  statuscode:
+                    type: string
+                    example: '4000005'
+                  statustext:
+                    type: string
+                    example: Update is unsuccessful
+      requestBody:
+        $ref: '#/components/requestBodies/post'
     delete:
       tags:
-      - othder
-      summary: Delete Accout
-      description: ""
-      operationId: Delete
+        - Post
+      summary: Employer can delete infomation in this path.
+      description: ''
       parameters:
-        - in: "body"
-          name: "Delete"
+        - in: path
+          name: postID
           required: true
           schema:
-            properties:
-              userId:
-                type: integer
-                example: 512
-              token:
-                type: string
-                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+            type: integer
+            format: int32
       responses:
-        200:
-          description: Deleted
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 2000012
-              statusText:
-                type: string
-                example: Deleted
-        400:
-          description: User not found
-          schema:
-            properties:
-              statusCode:
-                type: integer
-                example: 4000006
-              statusText:
-                type: string
-                example: Bad request           
-
-definitions: #------------------------------------------------------------------
-
-  filter_employee:
-    type: object
-    required:
-    - distant
-    - province
-    - category
-    properties:
-      distant:
-        type: integer
-        example: 50
-      province:
-        type: string
-        example: bangkok
-      category:
-        type: string
-        example: Bar 
-
-  filter_employer:
-    type: object
-    required:
-    - category
-    - province
-    properties:
-      category:
-        type: string
-        example: CEO
-      province:
-        type: string
-        example: bangkok
-
-  change:
-    type: object
-    required:
-    - oldpass
-    - newpass
-    - confirm
-    - token
-    properties:
-      oldpass:
-        type: string
-        example: swaggerisveryeasy
-      newpass:
-        type: string
-        example: ricksanchez12345
-      confirm:
-        type: string
-        example: ricksanchez12345
-      token:
-        type: string
-        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-
-  user: 
-    type: object
-    required:
-    - email
-    - passworld
-    - gender
-    - birthday
-    - firstname
-    - lastname
-    - id
-    - interest
-    - role
-    - lang
-    properties:
-      email:
-        type: string
-        example: tae_chanhom@hotmail.com
-      passworld:
-        type: string
-        example: 029959866Tae
-      gender:
-        type: string
-        example: male
-      brithday:
-        type: string
-        example: 14/12/42
-      firstname:
-        type: string
-        example: John
-      lastname:
-        type: string
-        example: Smith
-      id:
-        type: string
-        example: 152
-      role:
-        type: string
-        example: Employee
-      lang:
-        type: string
-        example: Thai
-      interest:
-        type: string
-        example: Coffee shop
-
-  post:
-    type: object
-    properties:
-      postID:
-        type: integer
-        example: 1
-      category:
-        type: string
-        example: Coffee shop
-      shopname:
-        type: string
-        example: U-coffee
-      description:
-        type: string
-        example: information about you shop
-      wage:
-        type: string
-        example: Week
-      min:
-        type: integer
-        example: 1000
-      max:
-        type: integer
-        example: 8000
-      location:
-        type: string
-        example: lamlugar 12130
-      province:
-        type: string
-        example: bangkok
-
-
-  profile_employee:
-    type: object
-    required:
-    - firstname
-    - lastname
-    - birthday
-    - age
-    - email
-    - number
-    - interest
-    - language
-    - experience
-    - token
-    properties:
-      firstname:
-        type: string
-        example: Rick
-      lastname:
-        type: string
-        example: Sanchez
-      birthday:
-        type: string
-        example: 29/2/1999
-      age:
-        type: integer
-        example: 19
-      email:
-        type: string
-        example: rick@gmail.com
-      number:
-        type: string
-        example: 089-999
-      interest:
-        type: string
-        example: spaceship crew
-      language:
-        type: string
-        example: English
-      experience:
-        type: string
-        example: none
-      token:
-        type: string
-        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-
-  profile_employer:
-    type: object
-    required:
-    - companyname
-    - phonenumber
-    - email
-    - website
-    - address
-    properties:
-      companyname:
-        type: string
-        example: UTNai Company
-      phonenumber:
-        type: string
-        example: 032-051-4216
-      email:
-        type: string
-        example: UTNai@gmail.com
-      website:
-        type: integer
-        example: UTNai.com
-      address:
-        type: string
-        example: 11600  New Petchaburi Rd.
-                Makkasan Sub-area   Ratchathewi Area
-                Krung Thep Maha Nakhon   10400
-                Thailand.
-
-  package:
-    type: object
-    required:
-    - levelID
-    - level
-    - price
-    - timerange
-    - postrange
-    - positions
-    properties:
-      levelID:
-        type: integer
-        format: int64
-        example: 1
-      level:
-        type: integer
-        example: 1
-      price:
-        type: integer
-        example: 500
-      timerange:
-        type: integer
-        example: 1
-      postrange:
-        type: string
-        example: Unlimited
-      positions:
-        type: integer
-        example: 1
+        '202':
+          description: Accepted!
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statuscode:
+                    type: string
+                    example: '2020001'
+                  statustext:
+                    type: string
+                    example: Delete is successful
+                  delete:
+                    $ref: '#/components/schemas/post'
+                type: object
+        '400':
+          description: Delete is unsuccessful
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  statuscode:
+                    type: string
+                    example: '4000005'
+                  statustext:
+                    type: string
+                    example: Delete is unsuccessful
   
-  employerlist:
-    type: object
-    properties:
-      employerId1:
-        type: integer
-        example: 489
-      employerId2:
-        type: integer
-        example: 424
-      employerId3:
-        type: integer
-        example: 749
+
+#Package ----------------------------------------------------------------------
+  /package:
+    get:
+      tags:
+        - Package
+      summary: Show package list
+      description: ''
+      parameters:
+        - in: path
+          name: packID
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statuscode:
+                    type: string
+                    example: '2000021'
+                  statustext:
+                    type: string
+                    example: Successful
+                  package:
+                    $ref: '#/components/schemas/package'
+                type: object
+    post:
+      tags:
+        - Package
+      summary: This page show post list
+      description: ''
+      parameters:
+        - in: path
+          name: query
+          required: true
+          description: Search data.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: string
+                    example: '20000009'
+                  statusText:
+                    type: string
+                    example: Show post successful
+                  posts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/post'
+                  search:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        example: name
+                      query:
+                        type: string
+                        example: U-coffee
+                type: object
+  /package/{packID}:
+    get:
+      tags:
+        - Package
+      summary: Show package list
+      description: ''
+      parameters:
+        - in: path
+          name: packID
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statuscode:
+                    type: string
+                    example: '2000021'
+                  statustext:
+                    type: string
+                    example: Successful
+                  package:
+                    $ref: '#/components/schemas/package'
+                type: object
+
+#Employee ----------------------------------------------------------------------
+  /employee:
+    get:
+      tags:
+        - Employee
+      summary: Employer Filter
+      description: ''
+      operationId: ''
+      parameters:
+        - in: path
+          name: query
+          required: true
+          description: Search data.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statuscode:
+                    type: string
+                    example: '2000015'
+                  statustext:
+                    type: string
+                    example: Successful
+                  employees:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: 
+                          type: integer
+                        name:
+                          type: string
+                        ocoupation:
+                          type: string
+                        age:
+                          type: string
+                        image:
+                          type: string
+                  pagination: 
+                    $ref: '#/components/schemas/pagination'
+                  search:
+                    $ref: '#/components/schemas/search'
+                type: object
+  /employee/{employeeId}:
+    get:
+      tags:
+        - Employee
+      summary: Employer Filter
+      description: ''
+      operationId: ''
+      parameters:
+        - in: path
+          name: employeeId
+          required: true
+          description: Search data.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statuscode:
+                    type: string
+                    example: '2000015'
+                  statustext:
+                    type: string
+                    example: Successful
+                  employee:
+                    type: object
+                    properties:
+                      id: 
+                        type: integer
+                      name:
+                        type: string
+                      ocoupation:
+                        type: string
+                      age:
+                        type: string
+                      image:
+                        type: string
+                      
+                type: object
+                
+#interests ---------------------------------------------------------------------
+
+  /interest:
+    get:
+      tags:
+        - Interrest
+      summary: This page show interests employee list
+      description: ''
+      parameters:
+        - in: path
+          name: query
+          required: true
+          description: Search data.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statuscode:
+                    type: string
+                    example: '2000017'
+                  statustext:
+                    type: string
+                    example: Successful
+                  interests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/profile_employee'
+                  search:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        example: name
+                      query:
+                        type: string
+                        example: U-coffee
+                type: object
+
+#Chat --------------------------------------------------------------------------
+
+  /chat:
+    get:
+      tags:
+        - Chat
+      summary: This page show chat list
+      description: ''
+      parameters:
+        - in: path
+          name: query
+          required: true
+          description: Search data.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statuscode:
+                    type: string
+                    example: '2000016'
+                  statustext:
+                    type: string
+                    example: Successful
+                  chats:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        firebaseToken:
+                          type: string
+                        createdAt:
+                          type: string
+                        updatedAt:
+                          type: string
+                        partner:
+                          $ref: '#/components/schemas/profile_employee'
+                  search:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        example: name
+                      query:
+                        type: string
+                        example: U-coffee
+                type: object
+
+security:
+  - bearerAuth: []  
   
-  returnregis: 
-    type: object
-    properties:
-      email:
-        type: string
-        example: tae_chanhom@hotmail.com
-      gender:
-        type: string
-        example: male
-      brithday:
-        type: string
-        example: 14/12/42
-      firstname:
-        type: string
-        example: John
-      lastname:
-        type: string
-        example: Smith
-      id:
-        type: string
-        example: 152
-      role:
-        type: string
-        example: Employee
-      lang:
-        type: string
-        example: Thai
-      interest:
-        type: string
-        example: Coffee shop
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT  
+  schemas:
+    pagination:
+      type: object
+      properties:
+        currentPage: 
+          type: integer
+        totalPage:
+          type: integer
+        perPage:
+          type: integer
+        totalItem:
+          type: integer
+    search:
+      type: object
+      properties:
+        key: 
+          type: string
+        query:
+          type: string
+    filter_employee:
+      type: object
+      required:
+        - distant
+        - province
+        - category
+      properties:
+        distant:
+          type: integer
+          example: 50
+        province:
+          type: string
+          example: bangkok
+        category:
+          type: string
+          example: Bar
+    filter_employer:
+      type: object
+      required:
+        - category
+        - province
+      properties:
+        category:
+          type: string
+          example: CEO
+        province:
+          type: string
+          example: bangkok
+    change:
+      type: object
+      required:
+        - oldpass
+        - newpass
+        - confirm
+        - token
+      properties:
+        oldpass:
+          type: string
+          example: swaggerisveryeasy
+        newpass:
+          type: string
+          example: ricksanchez12345
+        confirm:
+          type: string
+          example: ricksanchez12345
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+    user:
+      type: object
+      required:
+        - email
+        - passworld
+        - gender
+        - birthday
+        - firstname
+        - lastname
+        - interest
+        - role
+        - lang
+        - facebookId
+        - googleId
+      properties:
+        email:
+          type: string
+          example: tae_chanhom@hotmail.com
+        passworld:
+          type: string
+          example: 029959866Tae
+        gender:
+          type: string
+          example: male
+        brithday:
+          type: string
+          example: 14/12/42
+        firstname:
+          type: string
+          example: John
+        lastname:
+          type: string
+          example: Smith
+        role:
+          type: string
+          example: Employee
+        lang:
+          type: string
+          example: Thai
+        interest:
+          type: string
+          example: Coffee shop
+        facebookId:
+          type: string
+          example: rugileuglut
+        googleId:
+          type: string
+          example: "-"
+    post:
+      type: object
+      required:
+        - postID
+        - category
+        - shopname
+        - description
+        - wage
+        - min
+        - max
+        - location
+        - province
+        - occupation
+      properties:
+        postID:
+          type: integer
+          example: 1
+        category:
+          type: string
+          example: Coffee shop
+        shopname:
+          type: string
+          example: U-coffee
+        description:
+          type: string
+          example: information about you shop
+        wage:
+          type: string
+          example: Week
+        min:
+          type: integer
+          example: 1000
+        max:
+          type: integer
+          example: 8000
+        location:
+          type: string
+          example: lamlugar 12130
+        province:
+          type: string
+          example: bangkok
+        occupation:
+          type: string
+          example: bartender
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
 
-          
-      
+    profile_employee:
+      type: object
+      required:
+        - id
+        - firstname
+        - lastname
+        - birthday
+        - age
+        - email
+        - number
+        - interest
+        - language
+        - experience
+      properties:
+        id:
+          type: integer
+          example: 1
+        firstname:
+          type: string
+          example: Rick
+        lastname:
+          type: string
+          example: Sanchez
+        birthday:
+          type: string
+          example: 29/2/1999
+        age:
+          type: integer
+          example: 19
+        email:
+          type: string
+          example: rick@gmail.com
+        number:
+          type: string
+          example: 089-999
+        interest:
+          type: string
+          example: spaceship crew
+        language:
+          type: string
+          example: English
+        experience:
+          type: string
+          example: none
 
-# Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
-# basePath: /61070078/test/1.0.0
-schemes:
- - https
-# Added by API Auto Mocking Plugin
-# basePath: /61070078/UTnai_v01/1.0.0
-# Added by API Auto Mocking Plugin
-# basePath: /61070078/UTNai_V01_API/1.0.0
-# Added by API Auto Mocking Plugin
-# basePath: /61070089/UTNai_API/1.0.0
-# Added by API Auto Mocking Plugin
-# basePath: /61070078/UTNai_V01_API/1.0.0
-# Added by API Auto Mocking Plugin
-# basePath: /61070089/UTNai_API/1.0.0
-# Added by API Auto Mocking Plugin
-# basePath: /61070078/UTNai_V01_API/1.0.0
-# Added by API Auto Mocking Plugin
-basePath: /61070089/UTNai_API/1.0.0
+    profile_employer:
+      type: object
+      required:
+        - companyname
+        - phonenumber
+        - email
+        - website
+        - address
+      properties:
+        companyname:
+          type: string
+          example: UTNai Company
+        phonenumber:
+          type: string
+          example: 032-051-4216
+        email:
+          type: string
+          example: UTNai@gmail.com
+        website:
+          type: integer
+          example: UTNai.com
+        address:
+          type: string
+          example: >-
+            11600  New Petchaburi Rd. Makkasan Sub-area   Ratchathewi Area Krung
+            Thep Maha Nakhon   10400 Thailand.
+    package:
+      type: object
+      required:
+        - packID
+        - level
+        - price
+        - timerange
+        - postrange
+        - positions
+      properties:
+        packID:
+          type: integer
+          format: int64
+          example: 1
+        level:
+          type: integer
+          example: 1
+        price:
+          type: integer
+          example: 500
+        timerange:
+          type: integer
+          example: 1
+        postrange:
+          type: string
+          example: Unlimited
+        positions:
+          type: integer
+          example: 1
+    employerlist:
+      type: object
+      properties:
+        employerId1:
+          type: integer
+          example: 489
+        employerId2:
+          type: integer
+          example: 424
+        employerId3:
+          type: integer
+          example: 749
+    returnregis:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 152
+        email:
+          type: string
+          example: tae_chanhom@hotmail.com
+        gender:
+          type: string
+          example: male
+        brithday:
+          type: string
+          example: 14/12/42
+        firstname:
+          type: string
+          example: John
+        lastname:
+          type: string
+          example: Smith
+        role:
+          type: string
+          example: Employee
+        lang:
+          type: string
+          example: Thai
+        interest:
+          type: string
+          example: Coffee shop
+        facebookId:
+          type: string
+          example: rugileuglut
+        googleId:
+          type: string
+          example: "-"
+  requestBodies:
+    profile_employee:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/profile_employee'
+      description: Updated user object
+      required: true
+    post:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/post'
+      required: true
