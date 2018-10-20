@@ -15,6 +15,7 @@ tags:
   - name: Employee Profile
   - name: Employer Profile
   - name: Account
+  - name: OderPackage
 
 paths:
 #Auth --------------------------------------------------------------------------
@@ -374,9 +375,9 @@ paths:
                     type: string
                     example: Deleted
                 type: object
-                
-               
+
 #Account -----------------------------------------------------------------------
+
   /account:
     put:
       tags:
@@ -438,8 +439,9 @@ paths:
                     type: string
                     example: Bad request
                 type: object
-                
-#Employee Profile -----------------------------------------------------------------------
+
+#Employee Profile --------------------------------------------------------------
+
   /profile/employee:
     get:
       tags:
@@ -470,8 +472,9 @@ paths:
                 $ref: '#/components/schemas/profile_employee'
       requestBody:
         $ref: '#/components/requestBodies/profile_employee'
-        
-#Employeer Profile -----------------------------------------------------------------------
+
+#Employeer Profile -------------------------------------------------------------
+
   /profile/employeer:
     get:
       tags:
@@ -546,19 +549,13 @@ paths:
         required: true
   
 #Post --------------------------------------------------------------------------
+
   /post:
     post:
       tags:
         - Post
       summary: Employer can create  new post in this path.
       description: ''
-      parameters:
-        - in: path
-          name: postID
-          required: true
-          schema:
-            type: integer
-            format: int32
       responses:
         '201':
           description: Created!
@@ -567,16 +564,43 @@ paths:
               schema:
                 type: object
                 properties:
-                  statuscode:
+                  statusCode:
                     type: string
                     example: '2010002'
-                  statustext:
+                  statusText:
                     type: string
                     example: Create is successful
                   post:
                     $ref: '#/components/schemas/post'
       requestBody:
-        $ref: '#/components/requestBodies/post'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                shopName:
+                  type: string
+                description:
+                  type: string
+                wage:
+                  type: string
+                min:
+                  type: integer
+                max:
+                  type: integer
+                location:
+                  type: string
+                province:
+                  type: string
+                occupation:
+                  type: string
+                createdAt:
+                  type: string
+                updatedAt:
+                  type: string
     get:
       tags:
         - Post
@@ -615,6 +639,8 @@ paths:
                       query:
                         type: string
                         example: U-coffee
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
                 type: object
     
   /post/{postID}:
@@ -638,10 +664,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  statuscode:
+                  statusCode:
                     type: string
                     example: '2000005'
-                  statustext:
+                  statusText:
                     type: string
                     example: Successful
                   show:
@@ -666,13 +692,13 @@ paths:
             '*/*':
               schema:
                 properties:
-                  statuscode:
+                  statusCode:
                     type: string
                     example: '2020001'
-                  statustext:
+                  statusText:
                     type: string
                     example: Update is successful
-                  Edited:
+                  post:
                     $ref: '#/components/schemas/post'
                 type: object
         '400':
@@ -709,14 +735,12 @@ paths:
             '*/*':
               schema:
                 properties:
-                  statuscode:
+                  statusCode:
                     type: string
                     example: '2020001'
-                  statustext:
+                  statusText:
                     type: string
                     example: Delete is successful
-                  delete:
-                    $ref: '#/components/schemas/post'
                 type: object
         '400':
           description: Delete is unsuccessful
@@ -731,22 +755,15 @@ paths:
                   statustext:
                     type: string
                     example: Delete is unsuccessful
-  
 
-#Package ----------------------------------------------------------------------
+#Package -----------------------------------------------------------------------
+
   /package:
     get:
       tags:
         - Package
       summary: Show package list
       description: ''
-      parameters:
-        - in: path
-          name: packID
-          required: true
-          schema:
-            type: integer
-            format: int32
       responses:
         '200':
           description: OK
@@ -754,54 +771,25 @@ paths:
             '*/*':
               schema:
                 properties:
-                  statuscode:
-                    type: string
-                    example: '2000021'
-                  statustext:
-                    type: string
-                    example: Successful
-                  package:
-                    $ref: '#/components/schemas/package'
-                type: object
-    post:
-      tags:
-        - Package
-      summary: This page show post list
-      description: ''
-      parameters:
-        - in: path
-          name: query
-          required: true
-          description: Search data.
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful
-          content:
-            '*/*':
-              schema:
-                properties:
                   statusCode:
                     type: string
-                    example: '20000009'
+                    example: '2000021'
                   statusText:
                     type: string
-                    example: Show post successful
-                  posts:
+                    example: Successful
+                  packages:
                     type: array
                     items:
-                      $ref: '#/components/schemas/post'
+                      type: object
+                      properties:
+                        package:
+                          $ref: '#/components/schemas/package'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
                   search:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        example: name
-                      query:
-                        type: string
-                        example: U-coffee
+                    $ref: '#/components/schemas/search'
                 type: object
+
   /package/{packID}:
     get:
       tags:
@@ -822,24 +810,45 @@ paths:
             '*/*':
               schema:
                 properties:
-                  statuscode:
+                  statusCode:
                     type: string
                     example: '2000021'
-                  statustext:
+                  statusText:
                     type: string
                     example: Successful
                   package:
                     $ref: '#/components/schemas/package'
                 type: object
 
-#Employee ----------------------------------------------------------------------
-  /employee:
+#OderPackage ----------------------------------------------------------------------
+
+  /oderPackage:
+    post:
+      tags:
+        - OderPackage
+      summary: ''
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: '2000002'
+                  statusText:
+                    type: string
+                    example: OK
+                  package:
+                    $ref: '#/components/schemas/package'
     get:
       tags:
-        - Employee
-      summary: Employer Filter
+        - OderPackage
+      summary: ''
       description: ''
-      operationId: ''
       parameters:
         - in: path
           name: query
@@ -849,15 +858,96 @@ paths:
             type: string
       responses:
         '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: string
+                    example: '20000009'
+                  statusText:
+                    type: string
+                    example: Show Information Successful
+                  oders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/package'
+                  search:
+                    $ref: '#/components/schemas/search'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+                type: object
+  
+  /oderPackage/{oderPackageId}:
+    get:
+      tags:
+        - OderPackage
+      summary: ''
+      description: ''
+      parameters:
+        - in: path
+          name: oderPackageId
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: '2000005'
+                  statusText:
+                    type: string
+                    example: OK
+                  show:
+                    $ref: '#/components/schemas/package'
+
+#Employee ----------------------------------------------------------------------
+
+  /employee:
+    get:
+      tags:
+        - Employee
+      summary: Employees list
+      description: ''
+      operationId: ''
+      parameters:
+        - in: path
+          name: query
+          required: true
+          description: Search data.
+          schema:
+            type: string
+        - in: path
+          name: category
+          required: true
+          description: Category
+          schema:
+            type: string
+        - in: path
+          required: true
+          name: province
+          description: Province
+          schema:
+            type: string
+      responses:
+        '200':
           description: Successful
           content:
             '*/*':
               schema:
                 properties:
-                  statuscode:
+                  statusCode:
                     type: string
                     example: '2000015'
-                  statustext:
+                  statusText:
                     type: string
                     example: Successful
                   employees:
@@ -880,11 +970,12 @@ paths:
                   search:
                     $ref: '#/components/schemas/search'
                 type: object
+
   /employee/{employeeId}:
     get:
       tags:
         - Employee
-      summary: Employer Filter
+      summary: Profile's employee
       description: ''
       operationId: ''
       parameters:
@@ -901,28 +992,16 @@ paths:
             '*/*':
               schema:
                 properties:
-                  statuscode:
+                  statusCode:
                     type: string
                     example: '2000015'
-                  statustext:
+                  statusText:
                     type: string
                     example: Successful
                   employee:
-                    type: object
-                    properties:
-                      id: 
-                        type: integer
-                      name:
-                        type: string
-                      ocoupation:
-                        type: string
-                      age:
-                        type: string
-                      image:
-                        type: string
-                      
+                    $ref: '#/components/schemas/profile_employee'
                 type: object
-                
+
 #interests ---------------------------------------------------------------------
 
   /interest:
@@ -969,6 +1048,37 @@ paths:
 #Chat --------------------------------------------------------------------------
 
   /chat:
+    post:
+      tags:
+        - Chat
+      summary: ''
+      description: ''
+      parameters:
+        - in: path
+          name: partnerId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Add!
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                    example: '2010002'
+                  statusText:
+                    type: string
+                    example: Create is successful
+                  partner:
+                    type: object
+                    properties:
+                      partnerId:
+                        type: integer
+                        example: 1
     get:
       tags:
         - Chat
@@ -988,10 +1098,10 @@ paths:
             '*/*':
               schema:
                 properties:
-                  statuscode:
+                  statusCode:
                     type: string
                     example: '2000016'
-                  statustext:
+                  statusText:
                     type: string
                     example: Successful
                   chats:
@@ -1012,11 +1122,83 @@ paths:
                     properties:
                       key:
                         type: string
-                        example: name
+                        example: key
                       query:
                         type: string
-                        example: U-coffee
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
                 type: object
+    put:
+      tags:
+        - Chat
+      summary: ''
+      description: ''
+      operationId: ''
+      parameters:
+        - in: path
+          name: partnerId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Blocked!
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: string
+                    example: '2020001'
+                  statusText:
+                    type: string
+                    example: Update is successful
+                  block:
+                    type: object
+                    properties:
+                      partnerId:
+                        type: integer
+                type: object
+    delete:
+      tags:
+        - Chat
+      summary: ''
+      description: ''
+      parameters:
+        - in: path
+          name: partnerId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '202':
+          description: Deleted
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: string
+                    example: '2020001'
+                  statusText:
+                    type: string
+                    example: Delete is successful
+                type: object
+        '400':
+          description: Delete is unsuccessful
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  statuscode:
+                    type: string
+                    example: '4000005'
+                  statustext:
+                    type: string
+                    example: Delete is unsuccessful
+
+#===============================================================================
 
 security:
   - bearerAuth: []  
@@ -1039,6 +1221,7 @@ components:
           type: integer
         totalItem:
           type: integer
+
     search:
       type: object
       properties:
@@ -1046,6 +1229,7 @@ components:
           type: string
         query:
           type: string
+
     filter_employee:
       type: object
       required:
@@ -1062,6 +1246,7 @@ components:
         category:
           type: string
           example: Bar
+
     filter_employer:
       type: object
       required:
@@ -1074,26 +1259,24 @@ components:
         province:
           type: string
           example: bangkok
+
     change:
       type: object
       required:
         - oldpass
         - newpass
         - confirm
-        - token
       properties:
-        oldpass:
+        oldPass:
           type: string
           example: swaggerisveryeasy
-        newpass:
+        newPass:
           type: string
           example: ricksanchez12345
         confirm:
           type: string
           example: ricksanchez12345
-        token:
-          type: string
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+
     user:
       type: object
       required:
@@ -1142,6 +1325,7 @@ components:
         googleId:
           type: string
           example: "-"
+
     post:
       type: object
       required:
@@ -1248,7 +1432,7 @@ components:
         companyname:
           type: string
           example: UTNai Company
-        phonenumber:
+        phoneNumber:
           type: string
           example: 032-051-4216
         email:
@@ -1265,32 +1449,28 @@ components:
     package:
       type: object
       required:
-        - packID
         - level
         - price
         - timerange
         - postrange
         - positions
       properties:
-        packID:
-          type: integer
-          format: int64
-          example: 1
         level:
           type: integer
           example: 1
         price:
           type: integer
           example: 500
-        timerange:
+        timeRange:
           type: integer
           example: 1
-        postrange:
+        postRange:
           type: string
           example: Unlimited
         positions:
           type: integer
           example: 1
+
     employerlist:
       type: object
       properties:
@@ -1303,6 +1483,7 @@ components:
         employerId3:
           type: integer
           example: 749
+
     returnregis:
       type: object
       properties:
@@ -1339,6 +1520,7 @@ components:
         googleId:
           type: string
           example: "-"
+
   requestBodies:
     profile_employee:
       content:
