@@ -35,10 +35,10 @@ paths:
             '*/*':
               schema:
                 properties:
-                  statuscode:
+                  statusCode:
                     type: string
                     example: '2010001'
-                  statustext:
+                  statusText:
                     type: string
                     example: Created
                   user:
@@ -136,15 +136,8 @@ paths:
                   statusText:
                     type: string
                     example: Login successful
-                  token:
-                    properties:
-                      email:
-                        type: string
-                        example: sanchez@mail.com
-                      token:
-                        type: object
-                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-                    type: object
+                  user:
+                    $ref: '#/components/schemas/returnregis' 
                 type: object
         '400':
           description: Login is unsuccessful
@@ -164,9 +157,6 @@ paths:
           application/json:
             schema:
               properties:
-                email:
-                  type: string
-                  example: sanchez@mail.com
                 facebookId:
                   type: string
                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
@@ -193,12 +183,8 @@ paths:
                   statusText:
                     type: string
                     example: Login successful
-                  token:
-                    properties:
-                      token:
-                        type: object
-                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-                    type: object
+                  user:
+                    $ref: '#/components/schemas/returnregis'
                 type: object
         '400':
           description: Login is unsuccessful
@@ -218,9 +204,6 @@ paths:
           application/json:
             schema:
               properties:
-                email:
-                  type: string
-                  example: sanchez@mail.com
                 googleId:
                   type: string
                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
@@ -343,7 +326,7 @@ paths:
           application/json:
             schema:
               properties:
-                changepassToken:
+                token:
                   type: string
                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
                 newPass:
@@ -368,10 +351,10 @@ paths:
             '*/*':
               schema:
                 properties:
-                  statuscode:
+                  statusCode:
                     type: integer
                     example: '2000022'
-                  statustext:
+                  statusText:
                     type: string
                     example: Deleted
                 type: object
@@ -454,9 +437,28 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/profile_employee'
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 2000001
+                  statusText:
+                    type: string
+                    example: OK
+                  user:
+                    $ref: '#/components/schemas/profile_employee'
         '400':
           description: This id does not exist
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 4000001
+                  statusText:
+                    type: string
+                    example: bad request
+
     put:
       tags:
         - Employee Profile
@@ -469,13 +471,59 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/profile_employee'
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 2000001
+                  statusTetx:
+                    type: string
+                    example: OK
+                  user:
+                    $ref: '#/components/schemas/profile_employee'
       requestBody:
         $ref: '#/components/requestBodies/profile_employee'
 
 #Employeer Profile -------------------------------------------------------------
 
   /profile/employeer:
+    post:
+      tags:
+        - Employer Profile
+      summary: Create company profile
+      description: ''
+      responses:
+        201:
+          description: Created
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 2010001
+                  statusText:
+                    type: string
+                    example: Created
+                  company:
+                    $ref: '#/components/schemas/profile_employer'
+        400:
+          description: Fail to create company profile
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 4000001
+                  statusText:
+                    type: string
+                    example: Fail to create.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/profile_employer'
+        required: true
     get:
       tags:
         - Employer Profile
@@ -487,20 +535,15 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/profile_employer'
-        '408':
-          description: Request Timeout
-          content:
-            '*/*':
-              schema:
-                type: object
                 properties:
                   statusCode:
-                    type: string
-                    example: '40800009'
+                    type: integer
+                    example: 200001
                   statusText:
                     type: string
-                    example: Request Timeout
+                    example: OK
+                  company:
+                    $ref: '#/components/schemas/profile_employer'
     put:
       tags:
         - Employer Profile
@@ -512,35 +555,16 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/profile_employer'
-        '400':
-          description: Login is unsuccessful
-          content:
-            '*/*':
-              schema:
-                type: object
                 properties:
-                  statuscode:
+                  statusCode:
+                    type: integer
+                    example: 200001
+                  statusText:
                     type: string
-                    example: '4000003'
-                  statustext:
-                    type: string
-                    example: Create is unsuccessful
-                  companyname:
-                    type: string
-                    example: Plase Enter Company Name
-                  phonenumber:
-                    type: string
-                    example: Plase Enter Phone Number
-                  email:
-                    type: string
-                    example: Plase Enter Email
-                  website:
-                    type: string
-                    example: Plase Enter Website
-                  address:
-                    type: string
-                    example: Plase Enter Address
+                    example: OK
+                  company:
+                    $ref: '#/components/schemas/profile_employer'
+
       requestBody:
         content:
           application/json:
@@ -1005,6 +1029,40 @@ paths:
 #interests ---------------------------------------------------------------------
 
   /interest:
+    post:
+      tags:
+        - Interrest
+      summary: Like
+      description: ''
+      responses:
+        200:
+          description: Interrest
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200001
+                  statusText:
+                    type: string
+                    example: Liked!
+                  likedUser:
+                    properties:
+                      status:
+                        type: string
+                        example: not blocked
+                      user:
+                        $ref: '#/components/schemas/profile_employee'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                likedId:
+                  type: integer
+                  example: 1
+
     get:
       tags:
         - Interrest
@@ -1044,6 +1102,118 @@ paths:
                         type: string
                         example: U-coffee
                 type: object
+  /interest/{id}:
+    get:
+      tags: 
+        - Interrest
+      summary: Get user by ID
+      description: ''
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: OK
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statuscode:
+                    type: integer
+                    example: 2000001
+                  statusText:
+                    type: string
+                    example: OK
+                  user:
+                    properties:
+                      accountStatus:
+                        type: string
+                        example: Not blocked
+                      information:
+                        $ref: '#/components/schemas/profile_employee'
+        404:
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 4040001
+                  statusText:
+                    type: string
+                    example: Not found
+    put:
+      tags:
+        - Interrest
+      summary: Block or Unblock
+      description: ''
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Status updated
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 2000001
+                  statusText:
+                    type: string
+                    example: Blocked!
+                  id:
+                    type: integer
+                    example: 458
+                  status:
+                    type: string
+                    example: Blocked              
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: integer
+                  example: 458
+                status:
+                  type: string
+                  example: Blocked
+    delete:
+      tags:
+        - Interrest
+      summary: Unlike
+      description: ''
+      parameters:
+        - in: 'path'
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Unlike
+          content:
+            '*/*':
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200001
+                  statusText:
+                    type: string
+                    example: Unliked!
 
 #Chat --------------------------------------------------------------------------
 
@@ -1471,18 +1641,6 @@ components:
           type: integer
           example: 1
 
-    employerlist:
-      type: object
-      properties:
-        employerId1:
-          type: integer
-          example: 489
-        employerId2:
-          type: integer
-          example: 424
-        employerId3:
-          type: integer
-          example: 749
 
     returnregis:
       type: object
@@ -1510,7 +1668,7 @@ components:
           example: Employee
         lang:
           type: string
-          example: Thai
+          example: th
         interest:
           type: string
           example: Coffee shop
@@ -1520,6 +1678,9 @@ components:
         googleId:
           type: string
           example: "-"
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
 
   requestBodies:
     profile_employee:
